@@ -7,8 +7,9 @@ var timeInterval = 10;//0.01s
 var velocityY = 0;
 var velocityX = 0;
 var bottomY = 480;
-var leftRightKeyDown = false;
-var obstacleSet = //[x1,x2,y1,y2]
+var leftKeyDown = false;
+var rightKeyDown = false;
+var obstacleSet = //[x1,x2,y1,y2]//碰到障礙物不要觸發重力
 {
   "obstacle1" : [150,350,470,490],
 };
@@ -17,7 +18,8 @@ function checkKeyUp(e) {
   if(e.keyCode == '37' || e.keyCode =='39')
   {
     // left / right arrow up
-    leftRightKeyDown = false;
+    leftKeyDown = false;
+    rightKeyDown = false;
   }
 }
 
@@ -31,7 +33,7 @@ function checkKey(e) {
 
     if (e.keyCode == '38' || e.keyCode == '32') {
         // up arrow
-        if(!leftRightKeyDown) velocityX = 0;
+        if(!leftKeyDown&&!rightKeyDown) velocityX = 0;
         oriy = oriy-50;
         d3.select("#jumper").attr("cy",oriy);
     }
@@ -40,7 +42,7 @@ function checkKey(e) {
     }
     else if (e.keyCode == '37') {
        // left arrow       
-       leftRightKeyDown = true;
+       leftKeyDown = true;
        velocityX = -0.5;
        if(!inTheAir)
         {
@@ -51,7 +53,7 @@ function checkKey(e) {
     }
     else if (e.keyCode == '39') {
        // right arrow
-       leftRightKeyDown = true;
+       rightKeyDown = true;
        velocityX = 0.5;
        if(!inTheAir)
        {
