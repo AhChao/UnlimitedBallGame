@@ -1,4 +1,25 @@
 document.onkeydown = checkKey;
+document.onkeyup = checkKeyUp;
+var inTheAir = false;
+var droping = false;
+var dropTime = 0;
+var timeInterval = 10;//0.01s
+var velocityY = 0;
+var velocityX = 0;
+var bottomY = 480;
+var leftRightKeyDown = false;
+var obstacleSet = //[x1,x2,y1,y2]
+{
+  "obstacle1" : [150,350,470,490],
+};
+
+function checkKeyUp(e) {
+  if(e.keyCode == '37' || e.keyCode =='39')
+  {
+    // left / right arrow up
+    leftRightKeyDown = false;
+  }
+}
 
 function checkKey(e) {
     
@@ -6,33 +27,83 @@ function checkKey(e) {
 
     var orix = d3.select("#jumper").attr("cx");
     var oriy = d3.select("#jumper").attr("cy");
-    console.log(orix,oriy);
+    //console.log(e.keyCode);
 
-    if (e.keyCode == '38') {
+    if (e.keyCode == '38' || e.keyCode == '32') {
         // up arrow
-        console.log("up");
+        if(!leftRightKeyDown) velocityX = 0;
+        oriy = oriy-50;
+        d3.select("#jumper").attr("cy",oriy);
     }
     else if (e.keyCode == '40') {
         // down arrow
-        console.log("down");
     }
     else if (e.keyCode == '37') {
-       // left arrow
-       console.log("left");
-       orix = orix-10;
-       d3.select("#jumper").attr("cx",orix);
+       // left arrow       
+       leftRightKeyDown = true;
+       velocityX = -0.5;
+       if(!inTheAir)
+        {
+         //velocityX = -0.5;
+         orix = orix-5;       
+         d3.select("#jumper").attr("cx",orix);       
+       }       
     }
     else if (e.keyCode == '39') {
        // right arrow
-       console.log("right");
-       orix = Number(orix)+10;
-       d3.select("#jumper").attr("cx",orix);
+       leftRightKeyDown = true;
+       velocityX = 0.5;
+       if(!inTheAir)
+       {
+         //velocityX = 0.5;
+         orix = Number(orix)+5;         
+         d3.select("#jumper").attr("cx",orix);
+       }
     }
-
 }
 
 function worldGravity()
 {
+  var gravity = 0.3;
+  var distanceX;
+  var distanceY;
+  //v=gt 初速度=0
+  if(droping)
+  {
+    dropTime = (Number(dropTime)+Number(timeInterval));
+  }  
+  velocityY = gravity * dropTime/1000;
+  distanceY = velocityY*timeInterval;
   var oriy = d3.select("#jumper").attr("cy");
-  if(oriy<500)
+  var orix = d3.select("#jumper").attr("cx");
+
+  if(oriy<bottomY)
+  {
+    console.log(velocityX);
+    inTheAir = true;
+    droping = true;
+    oriy = Number(oriy) + distanceY;
+    if(oriy>bottomY)
+    {
+      inTheAir = false;
+      droping = false;
+      dropTime = 0;
+      oriy=bottomY;
+    } 
+    
+    distanceX = velocityX;
+    orix = Number(orix) + Number(distanceX);
+    d3.select("#jumper").attr("cy",oriy);
+    d3.select("#jumper").attr("cx",orix);
+  }  
 }
+
+setInterval(worldGravity, timeInterval);
+
+/*
+while(1)
+{
+  setTimeout(function () {        
+            worldGravity();
+  }, 100);
+}*/
