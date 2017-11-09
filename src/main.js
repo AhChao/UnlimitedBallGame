@@ -12,14 +12,18 @@ var rightKeyDown = false;
 var jumpKeyDown = false;
 var jumpTimes = 0;
 var minYScroll = 300;
-var scrollMap = false;
+var scrollMap = false;//捲動開關
 var obstacleSet = //[x1,x2,y1,y2]//碰到障礙物不要觸發重力
 {
   "obstacle1" : [150,350,480,500],
+  "obstacle1_2" : [250,350,460,480],
+  "obstacle1_3" : [300,350,440,460],
   "obstacle2" : [0,150,430,450],
+  "obstacle3" : [150,170,220,370],
 };
 var ballBot;
 var ballCenter;
+var ballRadius = 10;
 var onTheObstacle = false;
 
 function checkKeyUp(e) {
@@ -45,14 +49,17 @@ function checkKey(e) {
     //console.log(e.keyCode);
 
     if (e.keyCode == '38' || e.keyCode == '32') {
-        // up arrow        
+        // up arrow             
         if(!jumpKeyDown)
         {
-          jumpTimes +=1;
-          //jumpKeyDown = true;
-          if(!leftKeyDown&&!rightKeyDown) velocityX = 0;
-          oriy = oriy-50;
-          d3.select("#jumper").attr("cy",oriy);
+          //jumpKeyDown =true;
+          if(jumpTimes<2)//跳兩段
+          {
+            //jumpTimes +=1;
+            if(!leftKeyDown&&!rightKeyDown) velocityX = 0;
+            oriy = oriy-50;
+            d3.select("#jumper").attr("cy",oriy);
+          }          
         }        
     }
     else if (e.keyCode == '40') {
@@ -65,7 +72,18 @@ function checkKey(e) {
        if(!inTheAir)
         {
          //velocityX = -0.5;
-         orix = orix-5;       
+         orix = orix-5;  
+         for (var i in obstacleSet)//撞到障礙物?
+         {
+            if((Number(oriy)-Number(ballRadius)>obstacleSet[i][2]&&Number(oriy)-Number(ballRadius)<obstacleSet[i][3])||(Number(oriy)+Number(ballRadius)<obstacleSet[i][3]&&Number(oriy)+Number(ballRadius)>obstacleSet[i][2]))
+            {
+              if(Number(orix)-Number(ballRadius)<obstacleSet[i][1]&&Number(orix)-Number(ballRadius)+5>=obstacleSet[i][1])//本來在他的右邊 進去後撞到右邊
+              {
+               orix = obstacleSet[i][1]+ballRadius;
+               break;
+              }
+            }
+         }     
          d3.select("#jumper").attr("cx",orix);       
        }       
     }
@@ -76,14 +94,27 @@ function checkKey(e) {
        if(!inTheAir)
        {
          //velocityX = 0.5;
-         orix = Number(orix)+5;         
+         orix = Number(orix)+5;
+         console.log("oriy",oriy);
+         for (var i in obstacleSet)//撞到障礙物?
+         {
+            if((Number(oriy)-Number(ballRadius)>obstacleSet[i][2]&&Number(oriy)-Number(ballRadius)<obstacleSet[i][3])||(Number(oriy)+Number(ballRadius)<obstacleSet[i][3]&&Number(oriy)+Number(ballRadius)>obstacleSet[i][2]))
+            {
+              console.log(obstacleSet[i]);
+              if(Number(orix)+Number(ballRadius)>obstacleSet[i][0]&&Number(orix)+Number(ballRadius)-5<=obstacleSet[i][0])
+              {
+               orix = obstacleSet[i][0]-ballRadius;
+               break;
+              }
+            }
+         }   
          d3.select("#jumper").attr("cx",orix);
        }
     }
 }
 
 function worldGravity()
-{
+{  
   //算球的底端
   onTheObstacle = false;
   ballCenter = d3.select("#jumper").attr("cx");
@@ -94,7 +125,7 @@ function worldGravity()
     d3.select("#basicSVG").attr("viewBox","0,"+minYScroll+",500,500")
   }
   var gravity = 0.3;
-  var hittedObstalceY;
+  var hittedObstalceY;//撞到的障礙物的Y
   var distanceX;
   var distanceY;
   //v=gt 初速度=0
@@ -111,7 +142,7 @@ function worldGravity()
   {
     if(ballCenter>=obstacleSet[i][0]&&ballCenter<=obstacleSet[i][1])
     {
-      if(ballBot<=obstacleSet[i][2])
+      if((ballBot-obstacleSet[i][2])<5&&(ballBot-obstacleSet[i][2])>=0)
       {
        onTheObstacle=true;
        hittedObstalceY=obstacleSet[i][2];
@@ -129,6 +160,7 @@ function worldGravity()
   }
   if(onTheObstacle)
   {
+    jumpTimes = 0;
     inTheAir = false;
     droping = false;
     dropTime = 0;
@@ -142,6 +174,7 @@ function worldGravity()
     oriy = Number(oriy) + distanceY;
     if(oriy>bottomY)//撞到地板 重製跳躍狀態
     {
+      jumpTimes = 0;
       inTheAir = false;
       droping = false;
       dropTime = 0;
@@ -153,7 +186,8 @@ function worldGravity()
     d3.select("#jumper").attr("cy",oriy);
     d3.select("#jumper").attr("cx",orix);
   }
-  console.log(velocityY,distanceY,dropTime);
+  //console.log(onTheObstacle);
+  
 }
 
 function init()
