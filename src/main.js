@@ -22,9 +22,9 @@ var velocityY = 0;
 var velocityX = 0;
 var upV = 3;//2.5/0.01s
 //按鍵狀態控制
+var jumpKeyDown = false;
 var leftKeyDown = false;
 var rightKeyDown = false;
-var jumpKeyDown = false;
 //全域狀態控制
 var bottomY = 480;
 var minYScroll = 300;//Y卷軸相關速度
@@ -37,17 +37,23 @@ var obstacleSet = //[x1,x2,y1,y2,通行(option)]//碰到障礙物不要觸發重
   "obstacle2" : [0,150,430,450],//layer2
   "obstacle3" : [150,170,220,370,false],//pink
 };
+//按鍵設定
+var leftKey = 37;
+var rightKey = 39;
 
 function checkKeyUp(e) {//放開按鍵 重製按鍵狀態 主要避免壓著不放連續觸發
-  if(e.keyCode == '37' || e.keyCode =='39')//左鍵右鍵放開的時候
-  {//判斷
-    leftKeyDown = false;
-    rightKeyDown = false;
-  }
   if (e.keyCode == '38' || e.keyCode == '32') 
   {//跳躍鍵放開
     //jumpKeyUp
     jumpKeyDown = false;
+  }
+  else if (e.keyCode == leftKey ) 
+  {
+    leftKeyDown = false;
+  }
+  else if ( e.keyCode == rightKey )
+  {
+    rightKeyDown = false;
   }
 }
 
@@ -76,16 +82,16 @@ function checkKey(e) {//按下按鍵時觸發的
     else if (e.keyCode == '40') {
         // down arrow
     }
-    else if (e.keyCode == '37') {
-       // left arrow       
+    else if (e.keyCode == leftKey) {
+       // left arrow
        leftKeyDown = true;
        velocityX = -1;
-       //if(!inTheAir)
+       //if(!inTheAir) //在空中不能左右移動
        // {
           horizontalMoving = true;    
        //}       
     }
-    else if (e.keyCode == '39') {
+    else if (e.keyCode == rightKey) {
        // right arrow
        rightKeyDown = true;
        velocityX = 1;
@@ -97,7 +103,11 @@ function checkKey(e) {//按下按鍵時觸發的
 }
 
 function worldGravity()
-{  
+{
+  if(leftKeyDown||rightKeyDown)
+  {
+    horizontalMoving = true;
+  }
   //算球的底端
   onTheObstacle = false;
   ballCenter = d3.select("#jumper").attr("cx");
