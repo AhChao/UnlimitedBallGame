@@ -23,7 +23,7 @@ var velocityX = 0;
 var upV = 3;//2.5/0.01s
 //按鍵狀態控制
 var jumpKeyDown = false;
-var leftKeyDown = false;
+var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
 var bottomY = 480;
@@ -68,14 +68,11 @@ function checkKey(e) {//按下按鍵時觸發的
         // up arrow             
         if(!jumpKeyDown)
         {
-          //jumpKeyDown =true;
+          //jumpKeyDown =true;//看要不要擋上按著不放避免黏鍵
           if(jumpTimes<2)//跳兩段
           {
             jumpTimes +=1;//算跳躍段數
-            //if(!leftKeyDown&&!rightKeyDown) velocityX = 0;
-            //oriy = oriy-50;
             jumping = true;
-            //d3.select("#jumper").attr("cy",oriy);
           }          
         }        
     }
@@ -247,6 +244,6 @@ function init()
 {/*cut screen
   d3.select("#basicSVG").attr("viewBox","0,300,500,500")
                         .attr("preserveAspectRatio","xMidYMid slice");*/
-  setInterval(worldGravity, timeInterval);//add gravity to world
+  setInterval(worldGravity, timeInterval);//add gravity to world 0.01s
 }
 init();
