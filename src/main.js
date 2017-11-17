@@ -8,7 +8,7 @@ var onTheObstacle = false;
 var dropTime = 0;
 var jumpTimes = 0;
 var jumping = false;
-var jumpDistance = 50;
+var jumpDistance = 70;
 var distanceCount = 0;
 var horizontalMoving = false;
 var horizontalDistance = 10;
@@ -29,14 +29,17 @@ var rightKeyDown = false;
 var bottomY = 480;
 var minYScroll = 300;//Y卷軸相關速度
 var scrollMap = false;//捲動開關 開了就會捲動
-var obstacleSet = //[x1,x2,y1,y2,通行(option)]//碰到障礙物不要觸發重力
+var obstacleSet = //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
 {
-  "floor":[0,500,500,520],
+  "leftfloor":[-10,0,-9999,500,"noClimb"],
+  "rightfloor":[500,510,-9999,500,"noClimb"],
+  "downfloor":[0,500,500,520],
   "obstacle1" : [150,350,480,500],//stair
   "obstacle1_2" : [250,350,460,480],//stair2
   "obstacle1_3" : [300,350,440,460],//stair3
   "obstacle2" : [0,150,430,450],//layer2
-  "obstacle3" : [150,170,220,370,false],//pink
+  "obstacleV3" : [150,170,220,370,"cantPass"],//pink
+  "obstacleV4" : [210,230,220,370,"cantPass"],//pink
 };
 //按鍵設定
 var leftKey = 37;
@@ -208,8 +211,8 @@ function worldGravity()
   }  
   else //自由落體
   {
-    var oriy = d3.select("#jumper").attr("cy");
     var orix = d3.select("#jumper").attr("cx");
+    var oriy = d3.select("#jumper").attr("cy");
     inTheAir = true;
     droping = true;
     oriy = Number(oriy) + distanceY;
@@ -217,6 +220,8 @@ function worldGravity()
     for (var i in obstacleSet)//踩在障礙物上嗎
     {
       if(ballCenter>=obstacleSet[i][0]&&ballCenter<=obstacleSet[i][1])
+      /*if((Number(orix)-Number(ballRadius)<=obstacleSet[i][1]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][1])||
+            (Number(orix)-Number(ballRadius)<=obstacleSet[i][0]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][0]))*/
       {
         //加了距離後跑進障礙物中
         if((Number(oriy)+Number(ballRadius)+Number(distanceY)>=obstacleSet[i][2])&&
@@ -243,6 +248,28 @@ function init()
 {/*cut screen
   d3.select("#basicSVG").attr("viewBox","0,300,500,500")
                         .attr("preserveAspectRatio","xMidYMid slice");*/
+  obstacleBuild();
   setInterval(worldGravity, timeInterval);//add gravity to world 0.01s
+}
+
+function obstacleBuild()
+{
+  for(var i in obstacleSet)
+  {
+    height = obstacleSet[i][3]-obstacleSet[i][2];
+    width = obstacleSet[i][1]-obstacleSet[i][0];
+    x = obstacleSet[i][0];
+    y = obstacleSet[i][2];
+    color = obstacleSet[i].length > 4 ? "pink" : "gray"; 
+    d3.select("#basicSVG").
+    append('rect').
+    attr({
+    'x':x,
+    'y':y,
+    'height':height,
+    'width':width,
+    'fill':color,
+    });
+  }
 }
 init();
