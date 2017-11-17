@@ -8,11 +8,12 @@ var onTheObstacle = false;
 var dropTime = 0;
 var jumpTimes = 0;
 var jumping = false;
-var jumpDistance = 70;
+var jumpDistance = 60;
 var distanceCount = 0;
 var horizontalMoving = false;
 var horizontalDistance = 10;
 var horizontalCount = 0;
+var slideOnWall = false;
 //角色參數控制
 var ballBot;
 var ballCenter;
@@ -40,6 +41,13 @@ var obstacleSet = //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重
   "obstacle2" : [0,150,430,450],//layer2
   "obstacleV3" : [150,170,220,370,"cantPass"],//pink
   "obstacleV4" : [210,230,220,370,"cantPass"],//pink
+  "obstacle5" : [0,75,380,400],
+  "obstacle51" : [0,75,280,300],
+  "obstacle6" : [75,150,330,350],
+  "obstacle61" : [75,150,230,250],
+  "obstacle7" : [270,470,330,350],//stair
+  "obstacle7_2" : [270,370,310,331],//stair2
+  "obstacle7_3" : [270,320,290,311],//stair3
 };
 //按鍵設定
 var leftKey = 37;
@@ -105,8 +113,15 @@ function checkKey(e) {//按下按鍵時觸發的
 
 function worldGravity()
 {
-  if(leftKeyDown||rightKeyDown)
+  if(leftKeyDown)
   {
+    //velocityX = Math.abs(velocityX);
+    //velocityX = -velocityX;
+    horizontalMoving = true;
+  }
+  else if(rightKeyDown)
+  {
+    //velocityX = Math.abs(velocityX);
     horizontalMoving = true;
   }
   //算球的底端
@@ -143,7 +158,6 @@ function worldGravity()
   }
   if(horizontalMoving)//橫向移動中
   {
-
     var orix = d3.select("#jumper").attr("cx");
     var oriy = d3.select("#jumper").attr("cy");
     orix = Number(orix)+Number(velocityX);
@@ -157,10 +171,23 @@ function worldGravity()
           if((Number(orix)-Number(ballRadius)>=obstacleSet[i][1]&&Number(orix)-Number(ballRadius)+Number(velocityX)<=obstacleSet[i][1])||
             (Number(orix)+Number(ballRadius)<=obstacleSet[i][0]&&Number(orix)+Number(ballRadius)+Number(velocityX)>=obstacleSet[i][0]))
           {
-           orix = orix - velocityX;
-           horizontalMoving = false;//撞到要停下移動狀態
-           horizontalCount = 0;
-           break;
+            if(droping&&obstacleSet[i][4]!="noClimb")//踢牆跳
+            {
+             orix = orix - velocityX*15;
+             droping = false;
+             jumpTimes = 0;
+             inTheAir = false;
+             droping = false;
+             dropTime = 0;
+             slideOnWall = true;
+            }
+            else //平常撞到的時候
+            {
+             orix = orix - velocityX;
+             horizontalMoving = false;//撞到要停下移動狀態
+             horizontalCount = 0;
+             break;              
+            }           
           }
         }
     } 
@@ -209,6 +236,13 @@ function worldGravity()
     droping = false;
     dropTime = 0;
   }  
+  else if(slideOnWall)
+  {
+    var oriy = d3.select("#jumper").attr("cy");
+    oriy = Number(oriy) + 0.5;
+    d3.select("#jumper").attr("cy",oriy);
+    slideOnWall =false;
+  }
   else //自由落體
   {
     var orix = d3.select("#jumper").attr("cx");
@@ -220,7 +254,8 @@ function worldGravity()
     for (var i in obstacleSet)//踩在障礙物上嗎
     {
       if(ballCenter>=obstacleSet[i][0]&&ballCenter<=obstacleSet[i][1])
-      /*if((Number(orix)-Number(ballRadius)<=obstacleSet[i][1]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][1])||
+      /*//判斷球左緣右緣在(障礙物左緣或右緣間)
+      if((Number(orix)-Number(ballRadius)<=obstacleSet[i][1]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][1])||
             (Number(orix)-Number(ballRadius)<=obstacleSet[i][0]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][0]))*/
       {
         //加了距離後跑進障礙物中
