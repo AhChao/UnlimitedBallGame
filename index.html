@@ -8,7 +8,10 @@
 	<text>Color of Ball:</text><input type="color" id="jumperColor" value="#FCE0CA"></input>
 	<button onclick="Respawn()">Respawn</button>
 	<h3><text>Timer:  </text><text id="timerCount">0</text><text> second(s)</text></h3>
-	<text>[z]To start Timer / [x]To stop Timer</text><br>
+	<text>[z]To start Timer / [x]To stop Timer / [←][→]To move / [↑][Space]To jump and double jump</text><br>
+	<text style="color:gray ">Gray</text><text> can go through bottom / 
+	<text style="color:blue ">Blue</text><text> cant climb / 
+	<text style="color:red ">Red</text><text> is goal</text><br>
 	<svg id="basicSVG" width="500" height="500">
 		<rect id="basicSVGBG" x="0" y="0" width="500" height="500" fill="None" stroke="black" stroke-width="5"/>
 		<circle id="jumper" cx="250" cy="330" r="10" fill="#FCE0CA" stroke="black" stroke-width="2"/>
