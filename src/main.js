@@ -14,6 +14,7 @@ var horizontalMoving = false;
 var horizontalDistance = 10;
 var horizontalCount = 0;
 var slideOnWall = false;
+var cantClimb = false;
 //角色參數控制
 var ballRespawn = [50,400];
 var ballBot;
@@ -28,6 +29,7 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var startTimer = false;
 var totalTimeCount = 0;
 var bottomY = 480;
 var minYScroll = 300;//Y卷軸相關速度
@@ -36,24 +38,8 @@ var obstacleSet = //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重
 {
   "leftfloor":[-10,0,-9999,500,"noClimb"],
   "rightfloor":[500,510,-9999,500,"noClimb"],
-  //"downfloor":[0,500,500,520],
-  "obstacle1":[0,100,480,500,"cantPass"],
-  "obstacle2":[130,150,440,460,"cantPass"],
-  "obstacle3":[280,300,440,460,"cantPass"],
-  "obstacle4":[220,240,280,300,"cantPass"],
-  "obstacle5":[380,400,250,450,"cantPass"],
-  "obstacle6":[380,400,150,250,"noClimb"],
-  "obstacle7":[0,100,300,320,"cantPass"],
-  "obstacle8":[110,130,100,250,"noClimb"],
-  "obstacle9":[0,50,180,200,"noClimb"],
-  "obstacle10":[70,120,230,250,"noClimb"],
-  "obstacle11":[70,120,130,150,"noClimb"],
-  "obstacle12":[0,50,80,100,"noClimb"],
-  "obstacle13":[0,50,30,50],
-  "obstacle14":[100,180,5,25],
-  "obstacle15":[280,300,50,70,"cantPass"],
-  "goal":[450,480,440,460,"goal"],
-  /*//basic Test Stage
+  "downfloor":[0,500,500,520],
+  //basic Test Stage
   "obstacle1" : [150,350,480,500],//stair
   "obstacle1_2" : [250,350,460,480],//stair2
   "obstacle1_3" : [300,350,440,460],//stair3
@@ -67,11 +53,42 @@ var obstacleSet = //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重
   "obstacle7" : [270,470,330,350],//stair
   "obstacle7_2" : [270,370,310,331],//stair2
   "obstacle7_3" : [270,320,290,311],//stair3
-  */
 };
 //按鍵設定
 var leftKey = 37;
 var rightKey = 39;
+
+//關卡
+var stageSet =
+{
+  "praticeStage" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[-10,0,-9999,500,"noClimb"],
+      "rightfloor":[500,510,-9999,500,"noClimb"],
+      "obstacle1":[0,100,480,500,"cantPass"],
+      "obstacle2":[130,150,440,460,"cantPass"],
+      "obstacle3":[280,300,440,460,"cantPass"],
+      "obstacle4":[220,240,280,300,"cantPass"],
+      "obstacle5":[380,400,250,450,"cantPass"],
+      "obstacle6":[380,400,100,250,"noClimb"],//
+      "obstacle7":[0,100,300,320,"cantPass"],
+      "obstacle8":[110,130,100,250,"noClimb"],
+      "obstacle9":[0,50,180,200,"noClimb"],
+      "obstacle10":[70,120,230,250,"noClimb"],
+      "obstacle11":[70,120,130,150,"noClimb"],
+      "obstacle12":[0,50,80,100,"noClimb"],
+      "obstacle13":[0,50,30,50],
+      "obstacle14":[100,180,5,25],
+      "obstacle15":[280,300,50,70,"cantPass"],
+      "goal":[450,480,440,460,"goal"],
+    },
+    "respawnPoint" :
+    [50,400]
+    ,
+  },
+}
 
 function checkKeyUp(e) {//放開按鍵 重製按鍵狀態 主要避免壓著不放連續觸發
   if (e.keyCode == '38' || e.keyCode == '32') 
@@ -87,6 +104,15 @@ function checkKeyUp(e) {//放開按鍵 重製按鍵狀態 主要避免壓著不�
   {
     rightKeyDown = false;
   }
+  else if ( e.keyCode == '90')
+  {
+    restartTimer();
+    startTimer = true;
+  }
+  else if ( e.keyCode == '88')
+  {
+    startTimer = false;
+  }
 }
 
 function checkKey(e) {//按下按鍵時觸發的
@@ -97,7 +123,7 @@ function checkKey(e) {//按下按鍵時觸發的
     //console.log(e.keyCode);//用來看到底按了什麼
 
     if (e.keyCode == '38' || e.keyCode == '32') {
-        // up arrow             
+        // up arrow         
         if(!jumpKeyDown)
         {
           //jumpKeyDown =true;//看要不要擋上按著不放避免黏鍵
@@ -133,6 +159,7 @@ function checkKey(e) {//按下按鍵時觸發的
 
 function worldGravity()
 {
+  if (startTimer) updateTime();
   //dead
   if (d3.select("#jumper").attr("cy")>500+Number(ballRadius))
   {
@@ -210,6 +237,11 @@ function worldGravity()
             }
             else //平常撞到的時候
             {
+             if(obstacleSet[i][4]=="noClimb")
+             {
+              cantClimb = true;
+              jumping = false;
+             } 
              orix = orix - velocityX;
              horizontalMoving = false;//撞到要停下移動狀態
              horizontalCount = 0;
@@ -248,7 +280,7 @@ function worldGravity()
           }
         }
     }
-    d3.select("#jumper").attr("cy",oriy);
+    if(!cantClimb) d3.select("#jumper").attr("cy",oriy);
     if(distanceCount>=jumpDistance)
     {
       jumping=false;
@@ -289,25 +321,28 @@ function worldGravity()
         if((Number(oriy)+Number(ballRadius)+Number(distanceY)>=obstacleSet[i][2])&&
         (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
         {
+         if(obstacleSet[i][4]=="goal") startTimer = false;
          oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
          break;
         }
       }
-      else if(Number(orix)-Number(ballRadius)<=obstacleSet[i][0]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][0])
+      else if(Number(orix)-Number(ballRadius)<=obstacleSet[i][0]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][0]&&Number(orix)<=obstacleSet[i][0])
       {
         if((Number(oriy)+Number(ballRadius)+Number(distanceY)>=obstacleSet[i][2])&&
         (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
         {
+         if(obstacleSet[i][4]=="goal") startTimer = false;
          oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
          orix = obstacleSet[i][0] - ballRadius -1;
          break;
         }
       }
-      else if(Number(orix)-Number(ballRadius)<=obstacleSet[i][1]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][1])
+      else if(Number(orix)-Number(ballRadius)<=obstacleSet[i][1]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][1]&&Number(orix)>=obstacleSet[i][1])
       {
         if((Number(oriy)+Number(ballRadius)+Number(distanceY)>=obstacleSet[i][2])&&
         (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
         {
+         if(obstacleSet[i][4]=="goal") startTimer = false;
          oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
          orix = obstacleSet[i][1] + ballRadius + 1;
          break;
@@ -325,21 +360,36 @@ function worldGravity()
     d3.select("#jumper").attr("cx",orix);
     d3.select("#jumper").attr("cy",oriy);
   }
+  cantClimb = false;
 }
 
 function init()
 {/*cut screen
   d3.select("#basicSVG").attr("viewBox","0,300,500,500")
                         .attr("preserveAspectRatio","xMidYMid slice");*/
-  obstacleBuild();
+  obstacleSet = stageSet["praticeStage"]["obstacleSet"];
+  ballRespawn = stageSet["praticeStage"]["respawnPoint"];
+  obstacleBuild();   
+
   d3.select("#jumper").attr("cx",ballRespawn[0])
                       .attr("cy",ballRespawn[1]);
+  /*d3.select("#jumper").attr("cx",120)
+                      .attr("cy",100);*/
   setInterval(worldGravity, timeInterval);//add gravity to world 0.01s
 }
 
 function getTime()
+{  
+  return ((totalTimeCount/1000).toFixed(2));//secound
+}
+function updateTime()
 {
-  return (totalTimeCount/1000);//secound
+  document.getElementById("timerCount").innerText = getTime();
+}
+function restartTimer()
+{
+  totalTimeCount = 0;
+  updateTime();
 }
 
 function Respawn()
@@ -372,3 +422,4 @@ function obstacleBuild()
   }
 }
 init();
+updateTime();
