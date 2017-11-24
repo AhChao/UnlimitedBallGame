@@ -15,6 +15,7 @@ var horizontalDistance = 10;
 var horizontalCount = 0;
 var slideOnWall = false;
 //角色參數控制
+var ballRespawn = [50,400];
 var ballBot;
 var ballCenter;
 var ballRadius = 10;
@@ -27,6 +28,7 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var totalTimeCount = 0;
 var bottomY = 480;
 var minYScroll = 300;//Y卷軸相關速度
 var scrollMap = false;//捲動開關 開了就會捲動
@@ -34,7 +36,24 @@ var obstacleSet = //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重
 {
   "leftfloor":[-10,0,-9999,500,"noClimb"],
   "rightfloor":[500,510,-9999,500,"noClimb"],
-  "downfloor":[0,500,500,520],
+  //"downfloor":[0,500,500,520],
+  "obstacle1":[0,100,480,500,"cantPass"],
+  "obstacle2":[130,150,440,460,"cantPass"],
+  "obstacle3":[280,300,440,460,"cantPass"],
+  "obstacle4":[220,240,280,300,"cantPass"],
+  "obstacle5":[380,400,250,450,"cantPass"],
+  "obstacle6":[380,400,150,250,"noClimb"],
+  "obstacle7":[0,100,300,320,"cantPass"],
+  "obstacle8":[110,130,100,250,"noClimb"],
+  "obstacle9":[0,50,180,200,"noClimb"],
+  "obstacle10":[70,120,230,250,"noClimb"],
+  "obstacle11":[70,120,130,150,"noClimb"],
+  "obstacle12":[0,50,80,100,"noClimb"],
+  "obstacle13":[0,50,30,50],
+  "obstacle14":[100,180,5,25],
+  "obstacle15":[280,300,50,70,"cantPass"],
+  "goal":[450,480,440,460,"goal"],
+  /*//basic Test Stage
   "obstacle1" : [150,350,480,500],//stair
   "obstacle1_2" : [250,350,460,480],//stair2
   "obstacle1_3" : [300,350,440,460],//stair3
@@ -48,6 +67,7 @@ var obstacleSet = //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重
   "obstacle7" : [270,470,330,350],//stair
   "obstacle7_2" : [270,370,310,331],//stair2
   "obstacle7_3" : [270,320,290,311],//stair3
+  */
 };
 //按鍵設定
 var leftKey = 37;
@@ -113,6 +133,13 @@ function checkKey(e) {//按下按鍵時觸發的
 
 function worldGravity()
 {
+  //dead
+  if (d3.select("#jumper").attr("cy")>500+Number(ballRadius))
+  {
+    dropTime=0;
+    Respawn();
+  }
+  totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
   if(leftKeyDown)
   {
     //velocityX = Math.abs(velocityX);
@@ -251,7 +278,7 @@ function worldGravity()
     droping = true;
     oriy = Number(oriy) + distanceY;
     
-    for (var i in obstacleSet)//踩在障礙物上嗎
+    for (var i in obstacleSet)//踩在障礙物上嗎 做碰撞修正
     {
       if(ballCenter>=obstacleSet[i][0]&&ballCenter<=obstacleSet[i][1])
       /*//判斷球左緣右緣在(障礙物左緣或右緣間)
@@ -266,7 +293,27 @@ function worldGravity()
          break;
         }
       }
-    }
+      else if(Number(orix)-Number(ballRadius)<=obstacleSet[i][0]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][0])
+      {
+        if((Number(oriy)+Number(ballRadius)+Number(distanceY)>=obstacleSet[i][2])&&
+        (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
+        {
+         oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
+         orix = obstacleSet[i][0] - ballRadius -1;
+         break;
+        }
+      }
+      else if(Number(orix)-Number(ballRadius)<=obstacleSet[i][1]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][1])
+      {
+        if((Number(oriy)+Number(ballRadius)+Number(distanceY)>=obstacleSet[i][2])&&
+        (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
+        {
+         oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
+         orix = obstacleSet[i][1] + ballRadius + 1;
+         break;
+        }
+      }
+    }/*
     if(oriy>bottomY)//撞到地板 重製跳躍狀態
     {
       jumpTimes = 0;
@@ -274,7 +321,8 @@ function worldGravity()
       droping = false;
       dropTime = 0;
       oriy=bottomY;
-    }
+    }*/
+    d3.select("#jumper").attr("cx",orix);
     d3.select("#jumper").attr("cy",oriy);
   }
 }
@@ -284,7 +332,21 @@ function init()
   d3.select("#basicSVG").attr("viewBox","0,300,500,500")
                         .attr("preserveAspectRatio","xMidYMid slice");*/
   obstacleBuild();
+  d3.select("#jumper").attr("cx",ballRespawn[0])
+                      .attr("cy",ballRespawn[1]);
   setInterval(worldGravity, timeInterval);//add gravity to world 0.01s
+}
+
+function getTime()
+{
+  return (totalTimeCount/1000);//secound
+}
+
+function Respawn()
+{
+  d3.select("#jumper").attr("cx",ballRespawn[0])
+                      .attr("cy",ballRespawn[1])
+                      .attr("fill",document.getElementById("jumperColor").value);
 }
 
 function obstacleBuild()
@@ -295,7 +357,9 @@ function obstacleBuild()
     width = obstacleSet[i][1]-obstacleSet[i][0];
     x = obstacleSet[i][0];
     y = obstacleSet[i][2];
-    color = obstacleSet[i].length > 4 ? "pink" : "gray"; 
+    color = obstacleSet[i].length > 4 ? "black" : "gray";
+    if(obstacleSet[i][4]=="noClimb") color="#0044BB";
+    else if(obstacleSet[i][4]=="goal") color="#AA0000";
     d3.select("#basicSVG").
     append('rect').
     attr({
