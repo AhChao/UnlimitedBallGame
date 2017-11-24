@@ -3,9 +3,14 @@
 <head>
 	<title>UnlimitedBall</title>
 </head>
-<body>
-	<h1>Unlimited Ball Game</h1>
-	<text>Color of Ball:</text><input type="color" id="jumperColor" value="#FCE0CA"></input>
+<body id="gameBody">
+	<h1 id="gameTitle">Unlimited Ball Game</h1>
+	<text>Choose Stage :</text>
+	<select id="stageSelect" onchange="init()">
+	  <option value="BasicStage">BasicStage</option>
+	　<option value="1124WeeklyChallenge">1124WeeklyChallenge</option>
+	</select>	
+	<text>| Color of Ball:</text><input type="color" id="jumperColor" value="#FCE0CA"></input>
 	<button onclick="Respawn()">Respawn</button>
 	<h3><text>Timer:  </text><text id="timerCount">0</text><text> second(s)</text></h3>
 	<text>[z]To start Timer / [x]To stop Timer / [←][→]To move / [↑][Space]To jump and double jump</text><br>

@@ -29,6 +29,7 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var gameStartInterval ;
 var startTimer = false;
 var totalTimeCount = 0;
 var bottomY = 480;
@@ -61,7 +62,33 @@ var rightKey = 39;
 //關卡
 var stageSet =
 {
-  "praticeStage" :
+  "BasicStage" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[-10,0,-9999,500,"noClimb"],
+      "rightfloor":[500,510,-9999,500,"noClimb"],
+      "downfloor":[0,500,500,520],
+      //basic Test Stage
+      "obstacle1" : [150,350,480,500],//stair
+      "obstacle1_2" : [250,350,460,480],//stair2
+      "obstacle1_3" : [300,350,440,460],//stair3
+      "obstacle2" : [0,150,430,450],//layer2
+      "obstacleV3" : [150,170,220,370,"cantPass"],//pink
+      "obstacleV4" : [210,230,220,370,"cantPass"],//pink
+      "obstacle5" : [0,75,380,400],
+      "obstacle51" : [0,75,280,300],
+      "obstacle6" : [75,150,330,350],
+      "obstacle61" : [75,150,230,250],
+      "obstacle7" : [270,470,330,350],//stair
+      "obstacle7_2" : [270,370,310,331],//stair2
+      "obstacle7_3" : [270,320,290,311],//stair3
+    },
+    "respawnPoint" : [250,400],
+    "stageName" : "BasicStage",
+
+  },
+  "1124WeeklyChallenge" :
   {
     "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
     {
@@ -84,9 +111,8 @@ var stageSet =
       "obstacle15":[280,300,50,70,"cantPass"],
       "goal":[450,480,440,460,"goal"],
     },
-    "respawnPoint" :
-    [50,400]
-    ,
+    "respawnPoint" : [50,400],
+    "stageName" : "1124WeeklyChallenge",
   },
 }
 
@@ -366,16 +392,44 @@ function worldGravity()
 function init()
 {/*cut screen
   d3.select("#basicSVG").attr("viewBox","0,300,500,500")
-                        .attr("preserveAspectRatio","xMidYMid slice");*/
-  obstacleSet = stageSet["praticeStage"]["obstacleSet"];
-  ballRespawn = stageSet["praticeStage"]["respawnPoint"];
+                        .attr("preserveAspectRatio","xMidYMid slice");*/  
+  clearInterval(gameStartInterval);
+  d3.selectAll("#basicSVG").remove();
+  d3.select("#gameBody").append("svg")
+  .attr("id","basicSVG")
+  .attr("width","500")
+  .attr("height","500");
+  document.getElementById("stageSelect").blur();
+  d3.select("#basicSVG").append("rect")
+  .attr("id","basicSVGBG")
+  .attr("x","0")
+  .attr("y","0")
+  .attr("fill","None")
+  .attr("stroke","black")
+  .attr("stroke-width","5")
+  .attr("width","500")
+  .attr("height","500");
+  d3.select("#basicSVG").append("circle")
+  .attr("id","jumper")
+  .attr("cx","250")
+  .attr("cy","330")
+  .attr("r","10")
+  .attr("fill","#FCE0CA")
+  .attr("stroke","black")
+  .attr("stroke-width","2")
+  .attr("width","500")
+  .attr("height","500");
+  var stage = document.getElementById("stageSelect").value;
+  obstacleSet = stageSet[stage]["obstacleSet"];
+  ballRespawn = stageSet[stage]["respawnPoint"];
+  document.getElementById("gameTitle").innerText = "Unlimited Ball Game" + " - " + stageSet[stage]["stageName"];
   obstacleBuild();   
 
   d3.select("#jumper").attr("cx",ballRespawn[0])
                       .attr("cy",ballRespawn[1]);
   /*d3.select("#jumper").attr("cx",120)
                       .attr("cy",100);*/
-  setInterval(worldGravity, timeInterval);//add gravity to world 0.01s
+  gameStartInterval = setInterval(worldGravity, timeInterval);//add gravity to world 0.01s
 }
 
 function getTime()
@@ -422,4 +476,3 @@ function obstacleBuild()
   }
 }
 init();
-updateTime();
