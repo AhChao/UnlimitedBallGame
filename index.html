@@ -3,7 +3,7 @@
 <head>
 	<title>UnlimitedBall</title>
 </head>
-<body id="gameBody">
+<body id="gameBody">	
 	<h1 id="gameTitle">Unlimited Ball Game</h1>
 	<text>Choose Stage :</text>
 	<select id="stageSelect" onchange="init()">					
@@ -20,6 +20,8 @@
 	<text style="color:#3A0088 ">&diams;</text><text> cant touch(dead) / 
 	<text style="color:red ">&diams;</text><text> is goal</text>
 	<br>
+	<div id="gamepadPrompt"></div>
+    <div id="gamepadDisplay"></div>
 	<svg id="basicSVG" width="500" height="500">
 		<rect id="basicSVGBG" x="0" y="0" width="500" height="500" fill="None" stroke="black" stroke-width="5"/>
 		<circle id="jumper" cx="250" cy="330" r="10" fill="#FCE0CA" stroke="black" stroke-width="2"/>

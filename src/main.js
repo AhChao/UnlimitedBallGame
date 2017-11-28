@@ -60,6 +60,7 @@ var leftKey = 37;
 var rightKey = 39;
 
 function checkKeyUp(e) {//放開按鍵 重製按鍵狀態 主要避免壓著不放連續觸發
+  //console.log("UP",e.keyCode);//用來看到底放了什麼    
   if (e.keyCode == '38' || e.keyCode == '32') 
   {//跳躍鍵放開
     //jumpKeyUp
@@ -85,17 +86,16 @@ function checkKeyUp(e) {//放開按鍵 重製按鍵狀態 主要避免壓著不�
 }
 
 function checkKey(e) {//按下按鍵時觸發的
-    
+    //console.log(e.keyCode);//用來看到底按了什麼    
     e = e || window.event;
     var orix = d3.select("#jumper").attr("cx");//抓主角的X,Y
-    var oriy = d3.select("#jumper").attr("cy");
-    //console.log(e.keyCode);//用來看到底按了什麼
+    var oriy = d3.select("#jumper").attr("cy");    
 
     if (e.keyCode == '38' || e.keyCode == '32') {
         // up arrow         
         if(!jumpKeyDown)
         {
-          //jumpKeyDown =true;//看要不要擋上按著不放避免黏鍵
+          jumpKeyDown =true;//看要不要擋上按著不放避免黏鍵
           if(jumpTimes<2)//跳兩段
           {
             jumpTimes +=1;//算跳躍段數
@@ -208,7 +208,6 @@ function worldGravity()
             }
             else //平常撞到的時候
             {
-              console.log(obstacleSet[i][4]);
              if(obstacleSet[i][4]=="noClimb")
              {
               cantClimb = true;
@@ -448,3 +447,97 @@ function obstacleBuild()
   }
 }
 init();
+
+//test for gamepad
+var hasGP = false;
+var repGP;
+var gpUPDown = false;
+var gpLeftDown = false;
+var gpRightDown = false;
+
+function canGame() {
+    return "getGamepads" in navigator;
+}
+
+function reportOnGamepad() {
+    var gp = navigator.getGamepads()[0];
+    var html = "";
+        html += "Pad id: "+gp.id+" | ";
+    html+= "pressed : ";
+
+    e = $.Event('keydown');
+    if(gp.buttons[12].pressed||gp.buttons[0].pressed)
+    {
+      html+= "Jump ";
+      gpUPDown=true;
+      e.keyCode= 38; // up and A
+      $('input').trigger(e);
+    } 
+    if(gp.buttons[14].pressed)
+    {
+      html+= "Left ";
+      gpLeftDown=true;
+      e.keyCode= leftKey;
+      $('input').trigger(e);
+    } 
+    if(gp.buttons[15].pressed)
+    {
+      html+= "Right ";
+      gpRightDown=true;
+      e.keyCode= rightKey;
+      $('input').trigger(e);
+    }
+
+    e = $.Event('keyup');
+    if(gpUPDown==true&&!gp.buttons[12].pressed&&!gp.buttons[0].pressed)
+    {
+      e.keyCode=38;
+      gpUPDown=false;
+      $('input').trigger(e);
+    }
+    if(gpLeftDown==true&&!gp.buttons[14].pressed)
+    {
+      e.keyCode=leftKey;
+      gpLeftDown=false;
+      $('input').trigger(e);
+    }
+    if(gpRightDown==true&&!gp.buttons[15].pressed)
+    {
+      e.keyCode=rightKey;
+      gpRightDown=false;
+      $('input').trigger(e);
+    }
+
+    $("#gamepadDisplay").html(html);
+}
+
+$(document).ready(function() { 
+
+if(canGame()) {
+    var prompt = "【To begin using your gamepad, connect it and press any button!】";
+    $("#gamepadPrompt").text(prompt);
+
+    $(window).on("gamepadconnected", function() {
+        hasGP = true;
+        $("#gamepadPrompt").html("【Gamepad connected!】");
+        console.log("connection event");
+        repGP = window.setInterval(reportOnGamepad,100);
+    });
+
+    $(window).on("gamepaddisconnected", function() {
+        console.log("disconnection event");
+        $("#gamepadPrompt").text(prompt);
+        window.clearInterval(repGP);
+    });
+
+    //setup an interval for Chrome
+    var checkGP = window.setInterval(function() {
+        console.log('checkGP');
+        if(navigator.getGamepads()[0]) {
+            if(!hasGP) $(window).trigger("gamepadconnected");
+            window.clearInterval(checkGP);
+        }
+    }, 500);
+}
+
+});
