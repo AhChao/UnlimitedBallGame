@@ -59,63 +59,6 @@ var obstacleSet = //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重
 var leftKey = 37;
 var rightKey = 39;
 
-//關卡
-var stageSet =
-{
-  "BasicStage" :
-  {
-    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
-    {
-      "leftfloor":[-10,0,-9999,500,"noClimb"],
-      "rightfloor":[500,510,-9999,500,"noClimb"],
-      "downfloor":[0,500,500,520],
-      //basic Test Stage
-      "obstacle1" : [150,350,480,500],//stair
-      "obstacle1_2" : [250,350,460,480],//stair2
-      "obstacle1_3" : [300,350,440,460],//stair3
-      "obstacle2" : [0,150,430,450],//layer2
-      "obstacleV3" : [150,170,220,370,"cantPass"],//pink
-      "obstacleV4" : [210,230,220,370,"cantPass"],//pink
-      "obstacle5" : [0,75,380,400],
-      "obstacle51" : [0,75,280,300],
-      "obstacle6" : [75,150,330,350],
-      "obstacle61" : [75,150,230,250],
-      "obstacle7" : [270,470,330,350],//stair
-      "obstacle7_2" : [270,370,310,331],//stair2
-      "obstacle7_3" : [270,320,290,311],//stair3
-    },
-    "respawnPoint" : [250,400],
-    "stageName" : "BasicStage",
-
-  },
-  "1124WeeklyChallenge" :
-  {
-    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
-    {
-      "leftfloor":[-10,0,-9999,500,"noClimb"],
-      "rightfloor":[500,510,-9999,500,"noClimb"],
-      "obstacle1":[0,100,480,500,"cantPass"],
-      "obstacle2":[130,150,440,460,"cantPass"],
-      "obstacle3":[280,300,440,460,"cantPass"],
-      "obstacle4":[220,240,280,300,"cantPass"],
-      "obstacle5":[380,400,250,450,"cantPass"],
-      "obstacle6":[380,400,100,250,"noClimb"],//
-      "obstacle7":[0,100,300,320,"cantPass"],
-      "obstacle8":[110,130,100,250,"noClimb"],
-      "obstacle9":[0,50,180,200,"noClimb"],
-      "obstacle10":[70,120,230,250,"noClimb"],
-      "obstacle11":[70,120,130,150,"noClimb"],
-      "obstacle12":[0,50,80,100,"noClimb"],
-      "obstacle13":[0,50,30,50],
-      "obstacle14":[100,180,5,25],
-      "obstacle15":[280,300,50,70,"cantPass"],
-      "goal":[450,480,440,460,"goal"],
-    },
-    "respawnPoint" : [50,400],
-    "stageName" : "1124WeeklyChallenge",
-  },
-}
-
 function checkKeyUp(e) {//放開按鍵 重製按鍵狀態 主要避免壓著不放連續觸發
   if (e.keyCode == '38' || e.keyCode == '32') 
   {//跳躍鍵放開
@@ -240,6 +183,7 @@ function worldGravity()
   {
     var orix = d3.select("#jumper").attr("cx");
     var oriy = d3.select("#jumper").attr("cy");
+    var collisionObstacle=[0,0,0,0,0];
     orix = Number(orix)+Number(velocityX);
     horizontalCount = Number(horizontalCount)+Math.abs(velocityX);
     for (var i in obstacleSet)//撞到障礙物?
@@ -251,7 +195,8 @@ function worldGravity()
           if((Number(orix)-Number(ballRadius)>=obstacleSet[i][1]&&Number(orix)-Number(ballRadius)+Number(velocityX)<=obstacleSet[i][1])||
             (Number(orix)+Number(ballRadius)<=obstacleSet[i][0]&&Number(orix)+Number(ballRadius)+Number(velocityX)>=obstacleSet[i][0]))
           {
-            if(droping&&obstacleSet[i][4]!="noClimb")//踢牆跳
+            collisionObstacle=obstacleSet[i];
+            if(droping&&obstacleSet[i][4]!="noClimb"&&obstacleSet[i][4]!="dead")//踢牆跳
             {
              orix = orix - velocityX*15;
              droping = false;
@@ -259,25 +204,39 @@ function worldGravity()
              inTheAir = false;
              droping = false;
              dropTime = 0;
-             slideOnWall = true;
+             slideOnWall = true;             
             }
             else //平常撞到的時候
             {
+              console.log(obstacleSet[i][4]);
              if(obstacleSet[i][4]=="noClimb")
              {
               cantClimb = true;
               jumping = false;
-             } 
+             }              
              orix = orix - velocityX;
              horizontalMoving = false;//撞到要停下移動狀態
              horizontalCount = 0;
+             if(obstacleSet[i][4]=="dead")
+             {
+              cantClimb = true;
+              jumping = false;
+              Respawn();              
+             }
              break;              
             }           
           }
         }
     } 
-    d3.select("#jumper").attr("cx",orix);
-    if(horizontalCount>=horizontalDistance)
+    if( collisionObstacle[4] =="dead")
+    {
+      Respawn();
+    }
+    else
+    {
+      d3.select("#jumper").attr("cx",orix);
+    }    
+    if(horizontalCount>=horizontalDistance || collisionObstacle[4] =="dead")
     {
       horizontalMoving = false;
       horizontalCount = 0 ;
@@ -288,6 +247,7 @@ function worldGravity()
   {
     var orix = d3.select("#jumper").attr("cx");
     var oriy = d3.select("#jumper").attr("cy");
+    var collisionObstacle=[0,0,0,0,0];
     oriy = Number(oriy)+Number(upV);
     distanceCount = Number(distanceCount)+Math.abs(upV);
     for (var i in obstacleSet)//撞到障礙物?
@@ -299,6 +259,7 @@ function worldGravity()
         {//球上緣本來在他的下邊 進去後撞到下邊
           if(Number(oriy)-Number(ballRadius)>=obstacleSet[i][3]&&Number(oriy)-Number(ballRadius)+Number(upV)<=obstacleSet[i][3])
           {
+           collisionObstacle=obstacleSet[i];
            oriy = obstacleSet[i][3]+ballRadius;
            jumping = false;//撞到要停下移動狀態
            distanceCount = 0;
@@ -307,6 +268,7 @@ function worldGravity()
         }
     }
     if(!cantClimb) d3.select("#jumper").attr("cy",oriy);
+    if(collisionObstacle[4]=="dead") Respawn();
     if(distanceCount>=jumpDistance)
     {
       jumping=false;
@@ -335,6 +297,7 @@ function worldGravity()
     inTheAir = true;
     droping = true;
     oriy = Number(oriy) + distanceY;
+    var collisionObstacle=[0,0,0,0,0];
     
     for (var i in obstacleSet)//踩在障礙物上嗎 做碰撞修正
     {
@@ -347,7 +310,8 @@ function worldGravity()
         if((Number(oriy)+Number(ballRadius)+Number(distanceY)>=obstacleSet[i][2])&&
         (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
         {
-         if(obstacleSet[i][4]=="goal") startTimer = false;
+         if(obstacleSet[i][4]=="goal") startTimer = false;     
+         collisionObstacle = obstacleSet[i];    
          oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
          break;
         }
@@ -358,6 +322,7 @@ function worldGravity()
         (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
         {
          if(obstacleSet[i][4]=="goal") startTimer = false;
+         collisionObstacle = obstacleSet[i];
          oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
          orix = obstacleSet[i][0] - ballRadius -1;
          break;
@@ -369,6 +334,7 @@ function worldGravity()
         (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
         {
          if(obstacleSet[i][4]=="goal") startTimer = false;
+         collisionObstacle = obstacleSet[i];
          oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
          orix = obstacleSet[i][1] + ballRadius + 1;
          break;
@@ -383,8 +349,12 @@ function worldGravity()
       dropTime = 0;
       oriy=bottomY;
     }*/
-    d3.select("#jumper").attr("cx",orix);
-    d3.select("#jumper").attr("cy",oriy);
+    if(collisionObstacle[4]=="dead") Respawn();
+    else
+    {
+      d3.select("#jumper").attr("cx",orix);
+      d3.select("#jumper").attr("cy",oriy);
+    }
   }
   cantClimb = false;
 }
@@ -427,8 +397,9 @@ function init()
 
   d3.select("#jumper").attr("cx",ballRespawn[0])
                       .attr("cy",ballRespawn[1]);
-  /*d3.select("#jumper").attr("cx",120)
-                      .attr("cy",100);*/
+                      //fortest
+  /*d3.select("#jumper").attr("cx",260)
+                      .attr("cy",40);*/
   gameStartInterval = setInterval(worldGravity, timeInterval);//add gravity to world 0.01s
 }
 
@@ -464,6 +435,7 @@ function obstacleBuild()
     color = obstacleSet[i].length > 4 ? "black" : "gray";
     if(obstacleSet[i][4]=="noClimb") color="#0044BB";
     else if(obstacleSet[i][4]=="goal") color="#AA0000";
+    else if(obstacleSet[i][4]=="dead") color="#3A0088";
     d3.select("#basicSVG").
     append('rect').
     attr({
