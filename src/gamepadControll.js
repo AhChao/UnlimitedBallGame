@@ -15,6 +15,12 @@ function reportOnGamepad() {
     html+= "pressed : ";
 
     e = $.Event('keydown');
+    if(gp.buttons[9].pressed)
+    {
+      html+= "Start ";
+      e.keyCode= 90;
+      $('input').trigger(e);
+    }
     if(gp.buttons[12].pressed||gp.buttons[0].pressed)
     {
       html+= "Jump ";

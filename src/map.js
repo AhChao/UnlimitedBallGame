@@ -3,25 +3,30 @@ var stageSet =
 {
   "BasicStage" :
   {
-    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    "obstacleSet" : //[x1,x2,y1,y2,屬性]//碰到障礙物不要觸發重力
     {
+      //basic Test Stage
       "leftfloor":[-10,0,-9999,500,"noClimb"],
       "rightfloor":[500,510,-9999,500,"noClimb"],
       "downfloor":[0,500,500,520],
-      //basic Test Stage
-      "obstacle1" : [150,350,480,500],//stair
-      "obstacle1_2" : [250,350,460,480],//stair2
-      "obstacle1_3" : [300,350,440,460],//stair3
-      "obstacle2" : [0,150,430,450],//layer2
-      "obstacleV3" : [150,170,220,370,"cantPass"],//pink
-      "obstacleV4" : [210,230,220,370,"cantPass"],//pink
-      "obstacle5" : [0,75,380,400],
-      "obstacle51" : [0,75,280,300],
-      "obstacle6" : [75,150,330,350],
-      "obstacle61" : [75,150,230,250],
-      "obstacle7" : [270,470,330,350],//stair
-      "obstacle7_2" : [270,370,310,331],//stair2
-      "obstacle7_3" : [270,320,290,311],//stair3
+      "deadob":[450,470,400,500,"dead"],      
+      "obstacle1" : [150,350,480,500,"passable"],//stair
+      "obstacle1" : [150,350,480,500,"passable"],//stair
+      "obstacle1_2" : [250,350,460,480,"passable"],//stair2
+      "obstacle1_3" : [300,350,440,460,"passable"],//stair3
+      "obstacle2" : [0,150,430,450,"passable"],//layer2
+      "obstacleV3" : [150,170,220,370,"cantPass"],
+      "obstacleV4" : [210,230,220,370,"cantPass"],
+      "obstacleV5" : [250,270,120,180,"noClimb"],
+      "obstacle5" : [0,75,380,400,"noClimb"],
+      "obstacle51" : [0,75,280,300,"noClimb"],
+      "obstacle6" : [75,150,330,350,"passable"],
+      "obstacle61" : [75,150,230,250,"passable"],
+      "goal" : [0,30,180,200,"goal"],
+      //"road" : [30,60,180,200,"noClimb"],
+      "obstacle7" : [270,470,330,350,"passable"],//stair
+      "obstacle7_2" : [270,370,310,331,"passable"],//stair2
+      "obstacle7_3" : [270,320,290,311,"passable"],//stair3
     },
     "respawnPoint" : [250,400],
     "stageName" : "BasicStage",
@@ -45,8 +50,8 @@ var stageSet =
       "obstacle10":[70,120,230,250,"noClimb"],
       "obstacle11":[70,120,130,150,"noClimb"],
       "obstacle12":[0,50,80,100,"noClimb"],
-      "obstacle13":[0,50,30,50],
-      "obstacle14":[100,180,5,25],
+      "obstacle13":[0,50,30,50,"passable"],
+      "obstacle14":[100,180,5,25,"passable"],
       "obstacle15":[280,300,50,70,"cantPass"],
       "goal":[450,480,440,460,"goal"],
     },
@@ -61,16 +66,16 @@ var stageSet =
       "rightfloor":[500,510,-9999,500,"noClimb"],
       "downfloor":[40,350,480,500,"noClimb"],
       //"upfloor":[-100,600,-20,0,"noClimb"],
-      "deadCube":[100,120,440,460,"dead"],
+      "deadCube":[100,120,435,455,"dead"],
       "deadCube2":[170,190,460,480,"dead"],
       "deadCube3":[170,190,370,390,"dead"],
-      "deadCube4":[250,270,440,460,"dead"],
+      "deadCube4":[250,270,435,455,"dead"],
       "obstacle1":[330,350,400,480,"cantPass"],
       "obstacle2":[470,490,400,480,"cantPass"],
       "deadCube5":[400,420,440,460,"dead"],
-      "obstacle3":[470,490,300,320],
+      "obstacle3":[470,490,300,320,"passable"],
       "obstacle4":[400,450,250,270,"noClimb"],
-      "obstacle5":[260,280,250,270],
+      "obstacle5":[260,280,250,270,"passable"],
       "obstacle6":[50,110,370,390,"noClimb"],
       "deadCube6":[40,60,330,350,"dead"],
       "obstacle7":[10,30,280,350,"cantPass"],

@@ -8,7 +8,7 @@ var onTheObstacle = false;
 var dropTime = 0;
 var jumpTimes = 0;
 var jumping = false;
-var jumpDistance = 60;
+var jumpDistance = 55;
 var distanceCount = 0;
 var horizontalMoving = false;
 var horizontalDistance = 10;
@@ -74,16 +74,7 @@ function checkKeyUp(e) {//放開按鍵 重製按鍵狀態 主要避免壓著不�
   else if ( e.keyCode == rightKey )
   {
     rightKeyDown = false;
-  }
-  else if ( e.keyCode == '90')
-  {
-    restartTimer();
-    startTimer = true;
-  }
-  else if ( e.keyCode == '88')
-  {
-    startTimer = false;
-  }
+  }  
 }
 
 function checkKey(e) {//按下按鍵時觸發的
@@ -125,6 +116,15 @@ function checkKey(e) {//按下按鍵時觸發的
         horizontalMoving = true;
        //}
     }
+    else if ( e.keyCode == '90')
+    {
+      restartTimer();
+      startTimer = true;
+    }
+    else if ( e.keyCode == '88')
+    {
+      startTimer = false;
+    }
 }
 
 function worldGravity()
@@ -140,13 +140,10 @@ function worldGravity()
   totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
   if(leftKeyDown)
   {
-    //velocityX = Math.abs(velocityX);
-    //velocityX = -velocityX;
     horizontalMoving = true;
   }
   else if(rightKeyDown)
   {
-    //velocityX = Math.abs(velocityX);
     horizontalMoving = true;
   }
   //算球的底端
@@ -168,7 +165,19 @@ function worldGravity()
   }  
   velocityY = gravity * dropTime/1000;
   distanceY = velocityY*timeInterval;
-  
+
+  var result = collisionDetection("#jumper",0,1);
+  onTheObstacle=false;
+  if(result[0])
+  {
+    onTheObstacle=true;
+    if(result[3]=="dead")
+     {
+      Respawn();
+     }
+  }
+
+  /*
   for (var i in obstacleSet)//踩在障礙物上嗎
   {
     onTheObstacle=false;
@@ -177,67 +186,56 @@ function worldGravity()
       if(Math.abs(ballBot-obstacleSet[i][2])<=1)
       {
        onTheObstacle=true;
+       if(obstacleSet[i][4]=="dead")
+       {
+        Respawn();
+       }
        break;
       }
     }
-  }
+  }*/
+  
   if(horizontalMoving)//橫向移動中
   {
     var orix = d3.select("#jumper").attr("cx");
     var oriy = d3.select("#jumper").attr("cy");
     var collisionObstacle=[0,0,0,0,0];
-    orix = Number(orix)+Number(velocityX);
-    horizontalCount = Number(horizontalCount)+Math.abs(velocityX);
-    for (var i in obstacleSet)//撞到障礙物?
-    {//上緣在某block的寬度間 或 下緣在某block的寬度間 =>表示同一高度
-        if((Number(oriy)-Number(ballRadius)<obstacleSet[i][3]&&Number(oriy)-Number(ballRadius)>obstacleSet[i][2])||
-          (Number(oriy)+Number(ballRadius)<obstacleSet[i][3]&&Number(oriy)+Number(ballRadius)>obstacleSet[i][2])||
-          (Number(oriy)<obstacleSet[i][3]&&Number(oriy)>obstacleSet[i][2]))
-        {//球左緣本來在他的右邊 進去後撞到右邊 或 球右緣本來在他左邊 進去後撞到右邊
-          if((Number(orix)-Number(ballRadius)>=obstacleSet[i][1]&&Number(orix)-Number(ballRadius)+Number(velocityX)<=obstacleSet[i][1])||
-            (Number(orix)+Number(ballRadius)<=obstacleSet[i][0]&&Number(orix)+Number(ballRadius)+Number(velocityX)>=obstacleSet[i][0]))
-          {
-            collisionObstacle=obstacleSet[i];
-            if(droping&&obstacleSet[i][4]!="noClimb"&&obstacleSet[i][4]!="dead")//踢牆跳
-            {
-             orix = orix - velocityX*15;
-             droping = false;
-             jumpTimes = 0;
-             inTheAir = false;
-             droping = false;
-             dropTime = 0;
-             slideOnWall = true;             
-            }
-            else //平常撞到的時候
-            {
-             if(obstacleSet[i][4]=="noClimb")
-             {
-              cantClimb = true;
-              jumping = false;
-             }              
-             orix = orix - velocityX;
-             horizontalMoving = false;//撞到要停下移動狀態
-             horizontalCount = 0;
-             if(obstacleSet[i][4]=="dead")
-             {
-              cantClimb = true;
-              jumping = false;
-              Respawn();              
-             }
-             break;              
-            }           
-          }
-        }
-    } 
-    if( collisionObstacle[4] =="dead")
-    {
-      Respawn();
+    //orix = Number(orix)+Number(velocityX);
+    //horizontalCount = Number(horizontalCount)+Math.abs(velocityX);
+    var result = collisionDetection("#jumper",velocityX,0);
+    if(result[0])//發生碰撞
+    {      
+      if(droping&&result[3]!="noClimb"&&result[3]!="dead")//踢牆跳
+      {
+        result[1] = result[1] - velocityX*15;
+        //orix = orix - velocityX*15;
+        droping = false;
+        jumpTimes = 0;
+        inTheAir = false;
+        droping = false;
+        dropTime = 0;
+        slideOnWall = true;
+      }
+      else //平常撞到的時候
+      {
+       if(result[3]=="noClimb")
+       {
+        cantClimb = true;
+        jumping = false;
+       }              
+       horizontalMoving = false;//撞到要停下移動狀態
+       horizontalCount = 0;
+       if(result[3]=="dead")
+       {
+        cantClimb = true;
+        jumping = false;
+       }          
+      }
     }
-    else
-    {
-      d3.select("#jumper").attr("cx",orix);
-    }    
-    if(horizontalCount>=horizontalDistance || collisionObstacle[4] =="dead")
+    d3.select("#jumper").attr("cx",result[1]);
+    d3.select("#jumper").attr("cy",result[2]);
+    horizontalCount = Number(horizontalCount)+Math.abs(result[1]-orix);
+    if(horizontalCount>=horizontalDistance || result[3] =="dead")
     {
       horizontalMoving = false;
       horizontalCount = 0 ;
@@ -246,30 +244,16 @@ function worldGravity()
 
   if(jumping)//跳躍中
   {
-    var orix = d3.select("#jumper").attr("cx");
     var oriy = d3.select("#jumper").attr("cy");
-    var collisionObstacle=[0,0,0,0,0];
-    oriy = Number(oriy)+Number(upV);
-    distanceCount = Number(distanceCount)+Math.abs(upV);
-    for (var i in obstacleSet)//撞到障礙物?
-    {//中心在某block的左右寬度間 或 中心在某block的左右寬度間 =>表示同一X範圍
-      if(obstacleSet[i].length==5)
-        if((Number(orix)-Number(ballRadius)>obstacleSet[i][0]&&Number(orix)-Number(ballRadius)<obstacleSet[i][1])||
-          (Number(orix)+Number(ballRadius)>obstacleSet[i][0]&&Number(orix)+Number(ballRadius)<obstacleSet[i][1])||
-          (Number(orix)>obstacleSet[i][0]&&Number(orix)<obstacleSet[i][1]))
-        {//球上緣本來在他的下邊 進去後撞到下邊
-          if(Number(oriy)-Number(ballRadius)>=obstacleSet[i][3]&&Number(oriy)-Number(ballRadius)+Number(upV)<=obstacleSet[i][3])
-          {
-           collisionObstacle=obstacleSet[i];
-           oriy = obstacleSet[i][3]+ballRadius;
-           jumping = false;//撞到要停下移動狀態
-           distanceCount = 0;
-           break;
-          }
-        }
+    var result = collisionDetection("#jumper",0,upV);
+    d3.select("#jumper").attr("cx",result[1]);
+    d3.select("#jumper").attr("cy",result[2]);
+    distanceCount = Number(distanceCount)+Math.abs(result[2]-oriy);
+    if(result[0])//撞到
+    {
+       jumping = false;//撞到要停下移動狀態
+       distanceCount = 0;
     }
-    if(!cantClimb) d3.select("#jumper").attr("cy",oriy);
-    if(collisionObstacle[4]=="dead") Respawn();
     if(distanceCount>=jumpDistance)
     {
       jumping=false;
@@ -297,67 +281,112 @@ function worldGravity()
     var oriy = d3.select("#jumper").attr("cy");
     inTheAir = true;
     droping = true;
-    oriy = Number(oriy) + distanceY;
     var collisionObstacle=[0,0,0,0,0];
     
-    for (var i in obstacleSet)//踩在障礙物上嗎 做碰撞修正
-    {
-      if(ballCenter>=obstacleSet[i][0]&&ballCenter<=obstacleSet[i][1])
-      /*//判斷球左緣右緣在(障礙物左緣或右緣間)
-      if((Number(orix)-Number(ballRadius)<=obstacleSet[i][1]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][1])||
-            (Number(orix)-Number(ballRadius)<=obstacleSet[i][0]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][0]))*/
-      {
-        //加了距離後跑進障礙物中
-        if((Number(oriy)+Number(ballRadius)+Number(distanceY)>=obstacleSet[i][2])&&
-        (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
-        {
-         if(obstacleSet[i][4]=="goal") startTimer = false;     
-         collisionObstacle = obstacleSet[i];    
-         oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
-         break;
-        }
-      }
-      else if(Number(orix)-Number(ballRadius)<=obstacleSet[i][0]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][0]&&Number(orix)<=obstacleSet[i][0])
-      {
-        if((Number(oriy)+Number(ballRadius)+Number(distanceY)>=obstacleSet[i][2])&&
-        (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
-        {
-         if(obstacleSet[i][4]=="goal") startTimer = false;
-         collisionObstacle = obstacleSet[i];
-         oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
-         orix = obstacleSet[i][0] - ballRadius -1;
-         break;
-        }
-      }
-      else if(Number(orix)-Number(ballRadius)<=obstacleSet[i][1]&&Number(orix)+Number(ballRadius)>=obstacleSet[i][1]&&Number(orix)>=obstacleSet[i][1])
-      {
-        if((Number(oriy)+Number(ballRadius)+Number(distanceY)>=obstacleSet[i][2])&&
-        (Number(oriy)+Number(ballRadius)+Number(distanceY)<=obstacleSet[i][3]))
-        {
-         if(obstacleSet[i][4]=="goal") startTimer = false;
-         collisionObstacle = obstacleSet[i];
-         oriy = obstacleSet[i][2]-ballRadius;//中心歸位到障礙物上緣-球半徑
-         orix = obstacleSet[i][1] + ballRadius + 1;
-         break;
-        }
-      }
-    }/*
-    if(oriy>bottomY)//撞到地板 重製跳躍狀態
-    {
-      jumpTimes = 0;
-      inTheAir = false;
-      droping = false;
-      dropTime = 0;
-      oriy=bottomY;
-    }*/
-    if(collisionObstacle[4]=="dead") Respawn();
-    else
-    {
-      d3.select("#jumper").attr("cx",orix);
-      d3.select("#jumper").attr("cy",oriy);
-    }
+    var result = collisionDetection("#jumper",0,distanceY);
+    d3.select("#jumper").attr("cx",result[1]);
+    d3.select("#jumper").attr("cy",result[2]);
   }
   cantClimb = false;
+}
+
+function collisionDetection(character,xDisplacement,yDisplacement)
+{  
+  var orix = d3.select(character).attr("cx");
+  var oriy = d3.select(character).attr("cy");
+  var changedX = Number(orix)+xDisplacement;
+  var changedY = Number(oriy)+yDisplacement;
+  var positionShouldBe = [false,changedX,changedY,""];//collision?,x,y
+  var collisionObstacle = [0,0,0,0,""];
+
+  for (var i in obstacleSet)//遍歷所有障礙物
+  {
+    if(xDisplacement)//判斷左右碰撞
+    {
+      //先判斷位移前&&位移後上下同高，再判斷左右穿越
+      if((Number(oriy)-Number(ballRadius)<obstacleSet[i][3]&&Number(oriy)-Number(ballRadius)>obstacleSet[i][2])||
+          (Number(oriy)+Number(ballRadius)<obstacleSet[i][3]&&Number(oriy)+Number(ballRadius)>obstacleSet[i][2])||
+          (Number(oriy)<obstacleSet[i][3]&&Number(oriy)>obstacleSet[i][2]))
+      {
+        if((Number(changedY)-Number(ballRadius)<obstacleSet[i][3]&&Number(changedY)-Number(ballRadius)>obstacleSet[i][2])||
+          (Number(changedY)+Number(ballRadius)<obstacleSet[i][3]&&Number(changedY)+Number(ballRadius)>obstacleSet[i][2])||
+          (Number(changedY)<obstacleSet[i][3]&&Number(changedY)>obstacleSet[i][2]))
+        { //左碰撞:球右緣本來在他左邊 進去後撞到右邊
+          if(Number(orix)+Number(ballRadius)<=obstacleSet[i][0]&&Number(changedX)+Number(ballRadius)>=obstacleSet[i][0])
+          {            
+            collisionObstacle = obstacleSet[i];
+            positionShouldBe[0]=true;
+            positionShouldBe[1]=obstacleSet[i][0]-ballRadius;
+          }
+          //右碰撞:球左緣本來在他的右邊 進去後撞到右邊
+          else if(Number(orix)-Number(ballRadius)>=obstacleSet[i][1]&&Number(changedX)-Number(ballRadius)<=obstacleSet[i][1])
+          {
+            collisionObstacle = obstacleSet[i];
+            positionShouldBe[0]=true;
+            positionShouldBe[1]=obstacleSet[i][1]+ballRadius;
+          }
+        }
+      }
+    }
+    if(positionShouldBe[0]==true)
+    {
+      positionShouldBe[3]=collisionObstacle[4];
+      break;//已發生碰撞
+    } 
+    if(yDisplacement)//判斷上下碰撞
+    {
+      //先判斷位移前&&位移後左右同範圍，再判斷上下穿越
+      if((Number(orix)-Number(ballRadius)>obstacleSet[i][0]&&Number(orix)-Number(ballRadius)<obstacleSet[i][1])||
+         (Number(orix)+Number(ballRadius)>obstacleSet[i][0]&&Number(orix)+Number(ballRadius)<obstacleSet[i][1])||
+         (Number(orix)>obstacleSet[i][0]&&Number(orix)<obstacleSet[i][1]))
+      {
+        if((Number(changedX)-Number(ballRadius)>obstacleSet[i][0]&&Number(changedX)-Number(ballRadius)<obstacleSet[i][1])||
+           (Number(changedX)+Number(ballRadius)>obstacleSet[i][0]&&Number(changedX)+Number(ballRadius)<obstacleSet[i][1])||
+           (Number(changedX)>obstacleSet[i][0]&&Number(changedX)<obstacleSet[i][1]))
+        { 
+          //上碰撞:球下緣本來在他的上邊 進去後撞到上邊          
+          if(Number(oriy)+Number(ballRadius)<=obstacleSet[i][2]&&Number(changedY)+Number(ballRadius)>=obstacleSet[i][2]||
+             Number(oriy)+Number(ballRadius)<=obstacleSet[i][3]&&Number(changedY)+Number(ballRadius)>=obstacleSet[i][3])
+          {            
+            collisionObstacle=obstacleSet[i];
+            positionShouldBe[0]=true;
+            positionShouldBe[2]=obstacleSet[i][2]-ballRadius;
+          }
+          //下碰撞:球上緣本來在他的下邊 進去後撞到下邊
+          else if(((Number(oriy)-Number(ballRadius)>=obstacleSet[i][3]&&Number(changedY)-Number(ballRadius)<=obstacleSet[i][3])||
+                  (Number(oriy)-Number(ballRadius)>=obstacleSet[i][2]&&Number(changedY)-Number(ballRadius)<=obstacleSet[i][2]))&&
+                  obstacleSet[i][4]!="passable")
+          {
+           collisionObstacle=obstacleSet[i];
+           positionShouldBe[0]=true;
+           positionShouldBe[2]=obstacleSet[i][3]+ballRadius;
+          }
+        }        
+      }
+    }
+    if(positionShouldBe[0]==true)
+    {
+      positionShouldBe[3]=collisionObstacle[4];
+      break;//已發生碰撞
+    } 
+  }
+
+  if(collisionObstacle[4]=="dead")
+  {
+    positionShouldBe[1]=ballRespawn[0];
+    positionShouldBe[2]=ballRespawn[1];
+  }
+  else if(collisionObstacle[4]=="goal")
+  {
+    //在上方才算到達終點
+    if(positionShouldBe[2]<collisionObstacle[2]&&
+       positionShouldBe[1]>=collisionObstacle[0]&&
+       positionShouldBe[1]<=collisionObstacle[1])
+    {
+      startTimer = false;
+    }
+  }
+  return positionShouldBe;
 }
 
 function init()
@@ -434,11 +463,12 @@ function obstacleBuild()
     width = obstacleSet[i][1]-obstacleSet[i][0];
     x = obstacleSet[i][0];
     y = obstacleSet[i][2];
-    color = obstacleSet[i].length > 4 ? "black" : "gray";
     if(obstacleSet[i][4]=="noClimb") color="#0044BB";
     else if(obstacleSet[i][4]=="goal") color="#AA0000";
     else if(obstacleSet[i][4]=="dead") color="#3A0088";
     else if(obstacleSet[i][4]=="spring") color="#F75000";
+    else if(obstacleSet[i][4]=="passable") color="gray";
+    else if(obstacleSet[i][4]=="cantPass") color="black";
     d3.select("#basicSVG").
     append('rect').
     attr({
