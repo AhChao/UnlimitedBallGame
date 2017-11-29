@@ -175,6 +175,12 @@ function worldGravity()
      {
       Respawn();
      }
+     if(result[3]=="spring")
+    {
+      jumping = true;
+      jumpTimes = 1;
+      dropTime = 0;
+    }
   }
 
   /*
@@ -205,7 +211,7 @@ function worldGravity()
     var result = collisionDetection("#jumper",velocityX,0);
     if(result[0])//發生碰撞
     {      
-      if(droping&&result[3]!="noClimb"&&result[3]!="dead")//踢牆跳
+      if(droping&&result[3]!="noClimb"&&result[3]!="dead"&&result[3]!="spring")//踢牆跳
       {
         result[1] = result[1] - velocityX*15;
         //orix = orix - velocityX*15;
@@ -284,6 +290,12 @@ function worldGravity()
     var collisionObstacle=[0,0,0,0,0];
     
     var result = collisionDetection("#jumper",0,distanceY);
+    if(result[3]=="spring")
+    {
+      jumping = true;
+      jumpTimes = 1;
+      dropTime = 0;
+    }
     d3.select("#jumper").attr("cx",result[1]);
     d3.select("#jumper").attr("cy",result[2]);
   }
@@ -429,8 +441,8 @@ function init()
   d3.select("#jumper").attr("cx",ballRespawn[0])
                       .attr("cy",ballRespawn[1]);
                       //fortest
-  /*d3.select("#jumper").attr("cx",260)
-                      .attr("cy",40);*/
+  /*d3.select("#jumper").attr("cx",210)
+                      .attr("cy",250);*/
   gameStartInterval = setInterval(worldGravity, timeInterval);//add gravity to world 0.01s
 }
 
