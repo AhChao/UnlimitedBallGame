@@ -93,4 +93,36 @@ var stageSet =
     "respawnPoint" : [50,420],
     "stageName" : "1128PatientStage",
   },
+  "WorkingStage" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[-10,0,-9999,500,"noClimb"],
+      //"rightfloor":[500,510,-9999,500,"noClimb"],
+      "downfloor":[0,500,480,500,"noClimb"],
+      //"upfloor":[-100,600,-20,0,"noClimb"],
+      "obstacle1":[0,20,0,500,"noClimb"],
+      "obstacle2":[180,200,0,440,"noClimb"],
+      "obstacle3":[20,40,40,60,"noClimb"],
+      "deadCube1":[100,180,420,440,"dead"],
+      "deadCube2":[20,100,350,370,"dead"],
+      "upCube1":[30,50,200,250,"spring"],
+    },
+    "respawnPoint" : [40,0],
+    "stageName" : "WorkingStage",
+  },
+  /*
+  "WorkingStage" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[-10,0,-9999,500,"noClimb"],
+      //"rightfloor":[500,510,-9999,500,"noClimb"],
+      "downfloor":[40,700,480,500,"noClimb"],
+      //"upfloor":[-100,600,-20,0,"noClimb"],
+    },
+    "respawnPoint" : [50,420],
+    "stageName" : "WorkingStage",
+    "chasing" : "true",
+  },*/
 }

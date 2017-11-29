@@ -29,6 +29,7 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var chasing =false;
 var gameStartInterval ;
 var startTimer = false;
 var totalTimeCount = 0;
@@ -128,6 +129,7 @@ function checkKey(e) {//按下按鍵時觸發的
 
 function worldGravity()
 {
+  if (chasing) chaseScreen();
   if (startTimer) updateTime();
   //dead
   if (d3.select("#jumper").attr("cy")>500+Number(ballRadius))
@@ -391,6 +393,7 @@ function init()
   var stage = document.getElementById("stageSelect").value;
   obstacleSet = stageSet[stage]["obstacleSet"];
   ballRespawn = stageSet[stage]["respawnPoint"];
+  chasing = stageSet[stage]["chasing"];
   document.getElementById("gameTitle").innerText = "Unlimited Ball Game" + " - " + stageSet[stage]["stageName"];
   obstacleBuild();   
 
@@ -435,6 +438,7 @@ function obstacleBuild()
     if(obstacleSet[i][4]=="noClimb") color="#0044BB";
     else if(obstacleSet[i][4]=="goal") color="#AA0000";
     else if(obstacleSet[i][4]=="dead") color="#3A0088";
+    else if(obstacleSet[i][4]=="spring") color="#F75000";
     d3.select("#basicSVG").
     append('rect').
     attr({
@@ -447,6 +451,20 @@ function obstacleBuild()
   }
 }
 init();
+
+function chaseScreen()
+{
+  var xMin=0;//d3.select("#jumper").attr("cx")-300;
+  var yMin=0;//d3.select("#jumper").attr("cy")-300;
+  var width = 500;
+  var height = 500;  
+  if(d3.select("#jumper").attr("cx")-xMin>=250) xMin=d3.select("#jumper").attr("cx")-xMin-250;
+  if(d3.select("#jumper").attr("cy")-yMin>=500) yMin=d3.select("#jumper").attr("cy")-yMin-500;
+  d3.select("#basicSVGBG").attr("x",xMin)
+                          .attr("y",yMin);
+  d3.select("#basicSVG").attr("viewBox",xMin+","+yMin+","+width+","+height)//"0,0,500,500"
+                        .attr("preserveAspectRatio","xMidYMid slice");
+}
 
 //test for gamepad
 var hasGP = false;
@@ -521,7 +539,7 @@ if(canGame()) {
         hasGP = true;
         $("#gamepadPrompt").html("【Gamepad connected!】");
         console.log("connection event");
-        repGP = window.setInterval(reportOnGamepad,100);
+        repGP = window.setInterval(reportOnGamepad,timeInterval);
     });
 
     $(window).on("gamepaddisconnected", function() {

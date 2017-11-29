@@ -1,7 +1,6 @@
 # UnlimitedBallGame
 
 ![Alt text](/img/PatientStage.png)
-Jump Higher!
 
 **完成項目**
 - 基本碰撞 / 重力 / 運動 / 攀爬
