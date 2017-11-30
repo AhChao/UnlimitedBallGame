@@ -143,6 +143,50 @@ var stageSet =
     "respawnPoint" : [440,60],
     "stageName" : "1129BumpBumpJump",
   },
+  "1130WeeklyChallenge" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[0,20,-9999,500,"noClimb"],
+      "rightfloor":[480,500,-9999,500,"noClimb"],
+      //"downfloor":[20,700,480,500,"noClimb"],
+      "upfloor":[-100,600,0,20,"noClimb"],
+
+      "start":[20,70,480,500,"noClimb"],
+      "goal":[20,50,350,370,"goal"],
+      "goalside":[50,70,320,370,"noClimb"],
+      "goalside2":[50,100,300,320,"noClimb"],
+      "obstacle1":[100,120,450,470,"ice"],
+      "obstacle2":[170,190,450,470,"ice"],
+      "obstacle3":[240,260,450,470,"ice"],
+      "obstacle4":[310,330,450,470,"ice"],
+      "obstacle5":[380,400,450,470,"ice"],
+      "rest1":[450,480,480,500,"noClimb"],
+
+      "climb1":[450,480,350,370,"cantPass"],
+      "obstacle6":[380,400,300,320,"ice"],
+      "deadcube1":[340,360,280,300,"dead"],
+      "obstacle7":[300,320,250,270,"ice"],
+      "deadline1":[260,280,150,350,"dead"],
+      "deadline3":[140,280,130,150,"dead"],
+      "rest2":[380,400,170,190,"noClimb"],
+
+      "obstacle8":[440,460,60,80,"ice"],
+      "obstacle9":[280,400,60,80,"noClimb"],
+
+      "deadline2":[20,110,200,220,"dead"],
+
+      "obstacle10":[220,240,60,80,"cantPass"],
+      "obstacle11":[100,120,100,120,"ice"],
+      "obstacle12":[30,50,130,150,"ice"],
+      "obstacle13":[70,90,170,190,"ice"],
+      "obstacle14":[130,150,200,220,"cantPass"],
+      "obstacle15":[210,230,200,220,"ice"],
+      "obstacle16":[210,230,270,290,"ice"],
+    },
+    "respawnPoint" : [50,420],
+    "stageName" : "1130WeeklyChallenge_IceMelted",
+  },
   /*
   "WorkingStage" :
   {

@@ -303,6 +303,7 @@ function collisionDetection(character,xDisplacement,yDisplacement)
   var changedY = Number(oriy)+yDisplacement;
   var positionShouldBe = [false,changedX,changedY,""];//collision?,x,y
   var collisionObstacle = [0,0,0,0,""];
+  var obstacleID = "";
 
   for (var i in obstacleSet)//遍歷所有障礙物
   {
@@ -320,6 +321,7 @@ function collisionDetection(character,xDisplacement,yDisplacement)
           if(Number(orix)+Number(ballRadius)<=obstacleSet[i][0]&&Number(changedX)+Number(ballRadius)>=obstacleSet[i][0])
           {            
             collisionObstacle = obstacleSet[i];
+            obstacleID = i;
             positionShouldBe[0]=true;
             positionShouldBe[1]=obstacleSet[i][0]-ballRadius;
           }
@@ -327,6 +329,7 @@ function collisionDetection(character,xDisplacement,yDisplacement)
           else if(Number(orix)-Number(ballRadius)>=obstacleSet[i][1]&&Number(changedX)-Number(ballRadius)<=obstacleSet[i][1])
           {
             collisionObstacle = obstacleSet[i];
+            obstacleID = i;
             positionShouldBe[0]=true;
             positionShouldBe[1]=obstacleSet[i][1]+ballRadius;
           }
@@ -354,6 +357,7 @@ function collisionDetection(character,xDisplacement,yDisplacement)
              Number(oriy)+Number(ballRadius)<=obstacleSet[i][3]&&Number(changedY)+Number(ballRadius)>=obstacleSet[i][3])
           {            
             collisionObstacle=obstacleSet[i];
+            obstacleID = i;
             positionShouldBe[0]=true;
             positionShouldBe[2]=obstacleSet[i][2]-ballRadius;
           }
@@ -363,6 +367,7 @@ function collisionDetection(character,xDisplacement,yDisplacement)
                   obstacleSet[i][4]!="passable")
           {
            collisionObstacle=obstacleSet[i];
+           obstacleID = i;
            positionShouldBe[0]=true;
            positionShouldBe[2]=obstacleSet[i][3]+ballRadius;
           }
@@ -389,6 +394,20 @@ function collisionDetection(character,xDisplacement,yDisplacement)
        positionShouldBe[1]<=collisionObstacle[1])
     {      
       passTheStage();
+    }
+  }
+  else if(collisionObstacle[4]=="ice")
+  {
+    if((d3.selectAll("#"+obstacleID))[0].length>0)
+    {
+      window.setTimeout(
+      function() {
+      d3.select("#"+obstacleID).remove();}
+      , 100);      
+    }
+    else//沒了就無視碰撞
+    {
+      positionShouldBe = [false,changedX,changedY,""];//collision?,x,y
     }
   }
   return positionShouldBe;
@@ -479,11 +498,39 @@ function passTheStage()
 
 function Respawn()
 {
+  stageReset();
+  console.log(velocityY);
   stageClear = false;
   d3.select("#logText").remove();
   d3.select("#jumper").attr("cx",ballRespawn[0])
                       .attr("cy",ballRespawn[1])
-                      .attr("fill",document.getElementById("jumperColor").value);
+                      .attr("fill",document.getElementById("jumperColor").value);  
+}
+
+function stageReset()//for dead
+{
+  for(var i in obstacleSet)
+  {
+    height = obstacleSet[i][3]-obstacleSet[i][2];
+    width = obstacleSet[i][1]-obstacleSet[i][0];
+    x = obstacleSet[i][0];
+    y = obstacleSet[i][2];
+    var obstacleID = i;
+    if(obstacleSet[i][4]=="ice"&&!(d3.selectAll("#"+obstacleID)[0].length>0))
+    {
+      color="#33FFDD";
+      d3.select("#basicSVG").
+      append('rect').
+      attr({
+      'x':x,
+      'y':y,
+      'height':height,
+      'width':width,
+      'fill':color,
+      'id': i,
+      });
+    }     
+  }
 }
 
 function obstacleBuild()
@@ -500,6 +547,7 @@ function obstacleBuild()
     else if(obstacleSet[i][4]=="spring") color="#F75000";
     else if(obstacleSet[i][4]=="passable") color="gray";
     else if(obstacleSet[i][4]=="cantPass") color="black";
+    else if(obstacleSet[i][4]=="ice") color="#33FFDD";
     d3.select("#basicSVG").
     append('rect').
     attr({
@@ -508,6 +556,7 @@ function obstacleBuild()
     'height':height,
     'width':width,
     'fill':color,
+    'id': i,
     });
   }
 }
