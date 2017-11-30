@@ -32,7 +32,7 @@ var rightKeyDown = false;
 var stageClear =false ;
 var chasing =false;
 var gameStartInterval ;
-var timerOpen = false;
+var timerOpen = 0;//0=off 1=all 2=pass
 var startTimer = false;
 var totalTimeCount = 0;
 var bottomY = 480;
@@ -86,7 +86,7 @@ function checkKey(e) {//按下按鍵時觸發的
     var oriy = d3.select("#jumper").attr("cy");    
 
     if (e.keyCode == '38' || e.keyCode == '32') {
-        if(timerOpen&&!startTimer) startTimer = true;
+        if(timerOpen>0&&!startTimer) startTimer = true;
         // up arrow         
         if(!jumpKeyDown)
         {
@@ -103,14 +103,14 @@ function checkKey(e) {//按下按鍵時觸發的
         // down arrow
     }
     else if (e.keyCode == leftKey) {
-       if(timerOpen&&!startTimer) startTimer = true;
+       if(timerOpen>0&&!startTimer) startTimer = true;
        // left arrow
        leftKeyDown = true;
        velocityX = -1;
        horizontalMoving = true;          
     }
     else if (e.keyCode == rightKey) {
-       if(timerOpen&&!startTimer) startTimer = true;
+       if(timerOpen>0&&!startTimer) startTimer = true;
        // right arrow
        rightKeyDown = true;
        velocityX = 1;
@@ -122,17 +122,24 @@ function checkKey(e) {//按下按鍵時觸發的
     }
     else if ( e.keyCode == '88')//x
     {
-      timerOpen = !timerOpen;
-      if(!timerOpen)
+      timerOpen = timerOpen+1;
+      if( timerOpen == 3 ) timerOpen=0;
+      if( timerOpen == 0 )
       {
         document.getElementById("timerStatusText").innerText = "Timer【OFF】:  ";
         totalTimeCount = 0;
         startTimer = false;
       }
-      else
+      else if( timerOpen == 1 )
       {
-        document.getElementById("timerStatusText").innerText = "Timer【ON】:  ";
+        restartTimer();
+        document.getElementById("timerStatusText").innerText = "Timer【ON/TotalMode】:  ";
       } 
+      else if( timerOpen == 2 )
+      {
+        restartTimer();
+        document.getElementById("timerStatusText").innerText = "Timer【ON/PassMode】:  ";
+      }
     }
 }
 
@@ -140,7 +147,7 @@ function worldGravity()
 {
   if (chasing) chaseScreen();
   if (startTimer) updateTime();
-  if (timerOpen) totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
+  if (timerOpen>0) totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
   //dead
   if (d3.select("#jumper").attr("cy")>500+Number(ballRadius))//摔落下方邊界
   {
@@ -254,7 +261,7 @@ function worldGravity()
     d3.select("#jumper").attr("cx",result[1]);
     d3.select("#jumper").attr("cy",result[2]);
     distanceCount = Number(distanceCount)+Math.abs(result[2]-oriy);
-    if(result[0])//撞到
+    if(result[0]&&result[4]=="bot")//撞到
     {
        jumping = false;//撞到要停下移動狀態
        distanceCount = 0;
@@ -331,6 +338,7 @@ function collisionDetection(character,xDisplacement,yDisplacement)
             obstacleID = i;
             positionShouldBe[0]=true;
             positionShouldBe[1]=obstacleSet[i][0]-ballRadius;
+            positionShouldBe[4]="left";
           }
           //右碰撞:球左緣本來在他的右邊 進去後撞到右邊
           else if(Number(orix)-Number(ballRadius)>=obstacleSet[i][1]&&Number(changedX)-Number(ballRadius)<=obstacleSet[i][1])
@@ -339,6 +347,7 @@ function collisionDetection(character,xDisplacement,yDisplacement)
             obstacleID = i;
             positionShouldBe[0]=true;
             positionShouldBe[1]=obstacleSet[i][1]+ballRadius;
+            positionShouldBe[4]="right";
           }
         }
       }
@@ -367,6 +376,7 @@ function collisionDetection(character,xDisplacement,yDisplacement)
             obstacleID = i;
             positionShouldBe[0]=true;
             positionShouldBe[2]=obstacleSet[i][2]-ballRadius;
+            positionShouldBe[4]="top";          
           }
           //下碰撞:球上緣本來在他的下邊 進去後撞到下邊
           else if(((Number(oriy)-Number(ballRadius)>=obstacleSet[i][3]&&Number(changedY)-Number(ballRadius)<=obstacleSet[i][3])||
@@ -377,6 +387,7 @@ function collisionDetection(character,xDisplacement,yDisplacement)
            obstacleID = i;
            positionShouldBe[0]=true;
            positionShouldBe[2]=obstacleSet[i][3]+ballRadius;
+           positionShouldBe[4]="bot";
           }
         }        
       }
@@ -505,6 +516,7 @@ function passTheStage()
 
 function Respawn()
 {
+  if( timerOpen == 2 ) restartTimer();
   stageReset();
   console.log(velocityY);
   stageClear = false;
