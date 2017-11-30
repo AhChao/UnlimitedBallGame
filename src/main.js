@@ -213,8 +213,15 @@ function worldGravity()
        }          
       }
     }
-    d3.select("#jumper").attr("cx",result[1]);
-    d3.select("#jumper").attr("cy",result[2]);
+    if(result[3]!="dead")
+    {
+      d3.select("#jumper").attr("cx",result[1]);
+      d3.select("#jumper").attr("cy",result[2]);
+    }
+    else
+    {
+      Respawn();
+    }    
     horizontalCount = Number(horizontalCount)+Math.abs(result[1]-orix);
     if(horizontalCount>=horizontalDistance || result[3] =="dead")
     {
