@@ -75,7 +75,7 @@ var stageSet =
       "obstacle1":[330,350,400,480,"cantPass"],
       "obstacle2":[470,490,400,480,"cantPass"],
       "deadCube5":[400,420,440,460,"dead"],
-      "obstacle3":[470,490,300,320,"passable"],
+      "obstacle3":[470,490,320,340,"passable"],
       "obstacle4":[400,450,250,270,"noClimb"],
       "obstacle5":[260,280,250,270,"passable"],
       "obstacle6":[50,110,370,390,"noClimb"],
@@ -98,6 +98,7 @@ var stageSet =
       "goal":[10,40,30,50,"goal"],
     },
     "respawnPoint" : [50,420],
+    "jumpDistance" : 50,
     "stageName" : "1128PatientStage",
   },
   "1129BumpBumpJump" :
@@ -135,7 +136,7 @@ var stageSet =
       "X5":[250,270,490,500,"dead"],
       "upCube8":[220,240,450,470,"spring"],
       "upCube9":[180,200,470,490,"spring"],
-      "restBlue2":[140,170,380,400,"noClimb"], 
+      "restBlue2":[130,160,390,410,"noClimb"], 
       "goal":[20,40,450,470,"goal"],
       
     },

@@ -29,8 +29,10 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var stageClear =false ;
 var chasing =false;
 var gameStartInterval ;
+var timerOpen = false;
 var startTimer = false;
 var totalTimeCount = 0;
 var bottomY = 480;
@@ -84,12 +86,14 @@ function checkKey(e) {//按下按鍵時觸發的
     var oriy = d3.select("#jumper").attr("cy");    
 
     if (e.keyCode == '38' || e.keyCode == '32') {
+        if(timerOpen&&!startTimer) startTimer = true;
         // up arrow         
         if(!jumpKeyDown)
         {
           jumpKeyDown =true;//看要不要擋上按著不放避免黏鍵
           if(jumpTimes<2)//跳兩段
           {
+            distanceCount = 0;
             jumpTimes +=1;//算跳躍段數
             jumping = true;
           }          
@@ -99,31 +103,36 @@ function checkKey(e) {//按下按鍵時觸發的
         // down arrow
     }
     else if (e.keyCode == leftKey) {
+       if(timerOpen&&!startTimer) startTimer = true;
        // left arrow
        leftKeyDown = true;
        velocityX = -1;
-       //if(!inTheAir) //在空中不能左右移動
-       // {
-          horizontalMoving = true;    
-       //}       
+       horizontalMoving = true;          
     }
     else if (e.keyCode == rightKey) {
+       if(timerOpen&&!startTimer) startTimer = true;
        // right arrow
        rightKeyDown = true;
        velocityX = 1;
-       //if(!inTheAir)
-       //{
-        horizontalMoving = true;
-       //}
+       horizontalMoving = true;
     }
-    else if ( e.keyCode == '90')
+    else if ( e.keyCode == '90')//z
     {
-      restartTimer();
-      startTimer = true;
+      restartTimer();      
     }
-    else if ( e.keyCode == '88')
+    else if ( e.keyCode == '88')//x
     {
-      startTimer = false;
+      timerOpen = !timerOpen;
+      if(!timerOpen)
+      {
+        document.getElementById("timerStatusText").innerText = "Timer【OFF】:  ";
+        totalTimeCount = 0;
+        startTimer = false;
+      }
+      else
+      {
+        document.getElementById("timerStatusText").innerText = "Timer【ON】:  ";
+      } 
     }
 }
 
@@ -131,13 +140,14 @@ function worldGravity()
 {
   if (chasing) chaseScreen();
   if (startTimer) updateTime();
+  if (timerOpen) totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
   //dead
-  if (d3.select("#jumper").attr("cy")>500+Number(ballRadius))
+  if (d3.select("#jumper").attr("cy")>500+Number(ballRadius))//摔落下方邊界
   {
     dropTime=0;
+    jumpTimes = 2;
     Respawn();
-  }
-  totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
+  }  
   if(leftKeyDown)
   {
     horizontalMoving = true;
@@ -165,41 +175,6 @@ function worldGravity()
   }  
   velocityY = gravity * dropTime/1000;
   distanceY = velocityY*timeInterval;
-
-  var result = collisionDetection("#jumper",0,1);
-  onTheObstacle=false;
-  if(result[0])
-  {
-    onTheObstacle=true;
-    if(result[3]=="dead")
-     {
-      Respawn();
-     }
-     if(result[3]=="spring")
-    {
-      jumping = true;
-      jumpTimes = 1;
-      dropTime = 0;
-    }
-  }
-
-  /*
-  for (var i in obstacleSet)//踩在障礙物上嗎
-  {
-    onTheObstacle=false;
-    if(ballCenter>=obstacleSet[i][0]&&ballCenter<=obstacleSet[i][1])
-    {
-      if(Math.abs(ballBot-obstacleSet[i][2])<=1)
-      {
-       onTheObstacle=true;
-       if(obstacleSet[i][4]=="dead")
-       {
-        Respawn();
-       }
-       break;
-      }
-    }
-  }*/
   
   if(horizontalMoving)//橫向移動中
   {
@@ -248,6 +223,23 @@ function worldGravity()
     }
   }
 
+  var result = collisionDetection("#jumper",0,1);//測是否站在障礙物上方
+  onTheObstacle=false;
+  if(result[0])
+  {
+    onTheObstacle=true;
+    if(result[3]=="dead")
+     {
+      Respawn();
+     }
+    if(result[3]=="spring")
+    {
+      jumping = true;
+      jumpTimes = 1;
+      dropTime = 0;
+    }
+  }
+
   if(jumping)//跳躍中
   {
     var oriy = d3.select("#jumper").attr("cy");
@@ -290,12 +282,13 @@ function worldGravity()
     var collisionObstacle=[0,0,0,0,0];
     
     var result = collisionDetection("#jumper",0,distanceY);
-    if(result[3]=="spring")
+    /*if(result[3]=="spring")
     {
+      console.log("7pupu");
       jumping = true;
       jumpTimes = 1;
       dropTime = 0;
-    }
+    }*/
     d3.select("#jumper").attr("cx",result[1]);
     d3.select("#jumper").attr("cy",result[2]);
   }
@@ -394,8 +387,8 @@ function collisionDetection(character,xDisplacement,yDisplacement)
     if(positionShouldBe[2]<collisionObstacle[2]&&
        positionShouldBe[1]>=collisionObstacle[0]&&
        positionShouldBe[1]<=collisionObstacle[1])
-    {
-      startTimer = false;
+    {      
+      passTheStage();
     }
   }
   return positionShouldBe;
@@ -405,6 +398,7 @@ function init()
 {/*cut screen
   d3.select("#basicSVG").attr("viewBox","0,300,500,500")
                         .attr("preserveAspectRatio","xMidYMid slice");*/  
+  stageClear = false;
   clearInterval(gameStartInterval);
   d3.selectAll("#basicSVG").remove();
   d3.select("#gameBody").append("svg")
@@ -435,6 +429,8 @@ function init()
   obstacleSet = stageSet[stage]["obstacleSet"];
   ballRespawn = stageSet[stage]["respawnPoint"];
   chasing = stageSet[stage]["chasing"];
+  if(stageSet[stage]["jumpDistance"]>0) jumpDistance = stageSet[stage]["jumpDistance"];
+  else jumpDistance = 55;
   document.getElementById("gameTitle").innerText = "Unlimited Ball Game" + " - " + stageSet[stage]["stageName"];
   obstacleBuild();   
 
@@ -457,11 +453,34 @@ function updateTime()
 function restartTimer()
 {
   totalTimeCount = 0;
+  startTimer = false;
+  stageClear = false;
+  d3.select("#logText").remove();
   updateTime();
+}
+
+function passTheStage()
+{
+  startTimer = false;
+  if(stageClear == false)
+  {
+    d3.select("#basicSVG").append("text")
+    .attr("id","logText")
+    .attr("x","80")
+    .attr("y","270")
+    .attr("fill","#EEEE00")
+    .attr("stroke","black")
+    .attr("stroke-width","1")
+    .attr("style","font-size:70px")
+    .text("Stage Clear!");
+    stageClear = true;  
+  }  
 }
 
 function Respawn()
 {
+  stageClear = false;
+  d3.select("#logText").remove();
   d3.select("#jumper").attr("cx",ballRespawn[0])
                       .attr("cy",ballRespawn[1])
                       .attr("fill",document.getElementById("jumperColor").value);
