@@ -195,8 +195,12 @@ var stageSet =
       //"rightfloor":[500,510,-9999,500,"noClimb"],
       "downfloor":[40,700,480,500,"noClimb"],
       //"upfloor":[-100,600,-20,0,"noClimb"],
+      "obstacle2":[190,210,400,480,"cantPass"],
+      "obstacle3":[50,150,350,370,"cantPass"],
 
-      "obstacle1":[80,100,460,480,"cantPass",0,-100,1.5],
+      "obstacle1":[80,170,260,280,"cantPass",0,-200,3], 
+      "obstacle5":[20,40,300,320,"cantPass",0,-100,3],
+      "obstacle4":[170,210,260,280,"cantPass",200,0,5],       
 
     },
     "respawnPoint" : [50,420],
