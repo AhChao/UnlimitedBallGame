@@ -143,7 +143,7 @@ var stageSet =
     "respawnPoint" : [440,60],
     "stageName" : "1129BumpBumpJump",
   },
-  "1130WeeklyChallenge" :
+  "1130IceMelted" :
   {
     "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
     {
@@ -185,7 +185,22 @@ var stageSet =
       "obstacle16":[210,230,270,290,"ice"],
     },
     "respawnPoint" : [50,420],
-    "stageName" : "1130WeeklyChallenge_IceMelted",
+    "stageName" : "1130IceMelted",
+  },
+  "WorkingStage" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[-10,0,-9999,500,"noClimb"],
+      //"rightfloor":[500,510,-9999,500,"noClimb"],
+      "downfloor":[40,700,480,500,"noClimb"],
+      //"upfloor":[-100,600,-20,0,"noClimb"],
+
+      "obstacle1":[80,100,460,480,"cantPass",0,-100,1.5],
+
+    },
+    "respawnPoint" : [50,420],
+    "stageName" : "WorkingStage",
   },
   /*
   "WorkingStage" :

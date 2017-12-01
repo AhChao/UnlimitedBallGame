@@ -29,6 +29,7 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var intervalList = [];
 var stageClear =false ;
 var chasing =false;
 var gameStartInterval ;
@@ -58,6 +59,7 @@ var obstacleSet = //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重
   "obstacle7_2" : [270,370,310,331],//stair2
   "obstacle7_3" : [270,320,290,311],//stair3
 };
+var oriObstacleSet;
 //按鍵設定
 var leftKey = 37;
 var rightKey = 39;
@@ -144,7 +146,7 @@ function checkKey(e) {//按下按鍵時觸發的
 }
 
 function worldGravity()
-{
+{  
   if (chasing) chaseScreen();
   if (startTimer) updateTime();
   if (timerOpen>0) totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
@@ -434,7 +436,12 @@ function collisionDetection(character,xDisplacement,yDisplacement)
 function init()
 {/*cut screen
   d3.select("#basicSVG").attr("viewBox","0,300,500,500")
-                        .attr("preserveAspectRatio","xMidYMid slice");*/  
+                        .attr("preserveAspectRatio","xMidYMid slice");*/ 
+  for(var i in intervalList)
+  {
+    clearInterval(intervalList[i]);
+  }
+  intervalList = [];
   stageClear = false;
   clearInterval(gameStartInterval);
   d3.selectAll("#basicSVG").remove();
@@ -463,13 +470,16 @@ function init()
   .attr("width","500")
   .attr("height","500");
   var stage = document.getElementById("stageSelect").value;
-  obstacleSet = stageSet[stage]["obstacleSet"];
+  //obstacleSet = stageSet[stage]["obstacleSet"];
+  obstacleSet = JSON.parse(JSON.stringify(stageSet[stage]["obstacleSet"]));
+  oriObstacleSet = JSON.parse(JSON.stringify(stageSet[stage]["obstacleSet"]));
+  //oriObstacleSet = stageSet[stage]["obstacleSet"];
   ballRespawn = stageSet[stage]["respawnPoint"];
   chasing = stageSet[stage]["chasing"];
   if(stageSet[stage]["jumpDistance"]>0) jumpDistance = stageSet[stage]["jumpDistance"];
   else jumpDistance = 55;
   document.getElementById("gameTitle").innerText = "Unlimited Ball Game" + " - " + stageSet[stage]["stageName"];
-  obstacleBuild();   
+  obstacleBuild(oriObstacleSet);   
 
   d3.select("#jumper").attr("cx",ballRespawn[0])
                       .attr("cy",ballRespawn[1]);
@@ -528,14 +538,14 @@ function Respawn()
 
 function stageReset()//for dead
 {
-  for(var i in obstacleSet)
+  for(var i in oriObstacleSet)
   {
-    height = obstacleSet[i][3]-obstacleSet[i][2];
-    width = obstacleSet[i][1]-obstacleSet[i][0];
-    x = obstacleSet[i][0];
-    y = obstacleSet[i][2];
+    height = oriObstacleSet[i][3]-oriObstacleSet[i][2];
+    width = oriObstacleSet[i][1]-oriObstacleSet[i][0];
+    x = oriObstacleSet[i][0];
+    y = oriObstacleSet[i][2];
     var obstacleID = i;
-    if(obstacleSet[i][4]=="ice"&&!(d3.selectAll("#"+obstacleID)[0].length>0))
+    if(oriObstacleSet[i][4]=="ice"&&!(d3.selectAll("#"+obstacleID)[0].length>0))
     {
       color="#33FFDD";
       d3.select("#basicSVG").
@@ -552,21 +562,23 @@ function stageReset()//for dead
   }
 }
 
-function obstacleBuild()
+function obstacleBuild(innerObstacleSet)
 {
-  for(var i in obstacleSet)
+  for(var i in innerObstacleSet)
   {
-    height = obstacleSet[i][3]-obstacleSet[i][2];
-    width = obstacleSet[i][1]-obstacleSet[i][0];
-    x = obstacleSet[i][0];
-    y = obstacleSet[i][2];
-    if(obstacleSet[i][4]=="noClimb") color="#0044BB";
-    else if(obstacleSet[i][4]=="goal") color="#AA0000";
-    else if(obstacleSet[i][4]=="dead") color="#3A0088";
-    else if(obstacleSet[i][4]=="spring") color="#F75000";
-    else if(obstacleSet[i][4]=="passable") color="gray";
-    else if(obstacleSet[i][4]=="cantPass") color="black";
-    else if(obstacleSet[i][4]=="ice") color="#33FFDD";
+    var height = innerObstacleSet[i][3]-innerObstacleSet[i][2];
+    var width = innerObstacleSet[i][1]-innerObstacleSet[i][0];
+    var x = innerObstacleSet[i][0];
+    var y = innerObstacleSet[i][2];
+    var obstacleID = i;
+
+    if(innerObstacleSet[i][4]=="noClimb") color="#0044BB";
+    else if(innerObstacleSet[i][4]=="goal") color="#AA0000";
+    else if(innerObstacleSet[i][4]=="dead") color="#3A0088";
+    else if(innerObstacleSet[i][4]=="spring") color="#F75000";
+    else if(innerObstacleSet[i][4]=="passable") color="gray";
+    else if(innerObstacleSet[i][4]=="cantPass") color="black";
+    else if(innerObstacleSet[i][4]=="ice") color="#33FFDD";
     d3.select("#basicSVG").
     append('rect').
     attr({
@@ -577,8 +589,72 @@ function obstacleBuild()
     'fill':color,
     'id': i,
     });
+    if(innerObstacleSet[i].length>5)//帶移動屬性
+    {      
+      var intervalListLength = Number(intervalList.length)+1;      
+      intervalList[intervalListLength] = setInterval(function(){obstacleMoving(obstacleID);}, timeInterval);
+    }
   }
 }
+
+function obstacleMoving(obsId) 
+{
+  var height = obstacleSet[obsId][3]-obstacleSet[obsId][2];
+  var width = obstacleSet[obsId][1]-obstacleSet[obsId][0];
+  var x = oriObstacleSet[obsId][0];
+  var y = oriObstacleSet[obsId][2];
+  var nowX = obstacleSet[obsId][0];
+  var nowY = obstacleSet[obsId][2];
+  //(Number(x) + Number(0.5*width))*(obstacleSet[obsId][5]>0 ? 1:-1) + Number(obstacleSet[obsId][5]);
+  var endPointX = Number(x) + Number(oriObstacleSet[obsId][5]);
+  var endPointY = Number(y) + Number(oriObstacleSet[obsId][6]);
+  var moveTime = obstacleSet[obsId][7]*1000;
+  var xMoveDistance = obstacleSet[obsId][5]*( timeInterval / moveTime);
+  var yMoveDistance = obstacleSet[obsId][6]*( timeInterval / moveTime);       
+  var shouldBeX ;
+  var shouldBeY ;
+  if(obstacleSet[obsId][8]!="type1"&&obstacleSet[obsId][8]!="type2") obstacleSet[obsId][8]="type1";//第一次
+
+  if(((oriObstacleSet[obsId][5]>=0&&nowX<endPointX)|| //x位移為正向右
+     (oriObstacleSet[obsId][5]<0&&nowX>endPointX)|| //x位移為負向左
+     (oriObstacleSet[obsId][6]>=0&&nowY<endPointY)|| //y位移為正向下
+     (oriObstacleSet[obsId][6]<0&&nowY>endPointY))&&obstacleSet[obsId][8]=="type1") //y位移為負向上
+  {
+    shouldBeX = Number(nowX)+Number(xMoveDistance);
+    shouldBeY = Number(nowY)+Number(yMoveDistance); 
+
+    obstacleSet[obsId][0] = shouldBeX;
+    obstacleSet[obsId][1] = shouldBeX+width;
+    obstacleSet[obsId][2] = shouldBeY;
+    obstacleSet[obsId][3] = shouldBeY+height;
+    d3.select("#"+obsId).attr("x",shouldBeX)
+                        .attr("y",shouldBeY);
+  }
+  else if(obstacleSet[obsId][8]=="type1") 
+  {
+    obstacleSet[obsId][8]="type2";
+  }
+  else if(((oriObstacleSet[obsId][5]>=0&&nowX>x)|| //x位移為正向右 反向向左 終點為起點
+     (oriObstacleSet[obsId][5]<0&&nowX<x)|| //x位移為負向左
+     (oriObstacleSet[obsId][6]>=0&&nowY>y)|| //y位移為正向下
+     (oriObstacleSet[obsId][6]<0&&nowY<y))&&obstacleSet[obsId][8]=="type2")
+  {    
+    shouldBeX = Number(nowX)-Number(xMoveDistance);
+    shouldBeY = Number(nowY)-Number(yMoveDistance);
+
+    obstacleSet[obsId][0] = shouldBeX;
+    obstacleSet[obsId][1] = shouldBeX+width;
+    obstacleSet[obsId][2] = shouldBeY;
+    obstacleSet[obsId][3] = shouldBeY+height;
+    d3.select("#"+obsId).attr("x",shouldBeX)
+                        .attr("y",shouldBeY);
+  }
+  else
+  {
+    obstacleSet[obsId][8]="type1";
+  }  
+}
+
 init();
 
 function chaseScreen()
