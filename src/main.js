@@ -30,6 +30,13 @@ var rightKeyDown = false;
 //全域狀態控制
 var intervalList = [];
 var stageClear =false ;
+var shadowMode = false;
+var shadowModeRec = false;
+var shadowPlay = false;
+var shadowLoaction = 
+{
+  "0":[0,0],
+};
 var chasing =false;
 var gameStartInterval ;
 var movingInterval = null;
@@ -88,7 +95,10 @@ function checkKey(e) {//按下按鍵時觸發的
     var oriy = d3.select("#jumper").attr("cy");    
 
     if (e.keyCode == '38' || e.keyCode == '32') {
-        if(timerOpen>0&&!startTimer) startTimer = true;
+        if(timerOpen>0&&!startTimer)
+        {
+         startTimer = true;
+        } 
         // up arrow         
         if(!jumpKeyDown)
         {
@@ -105,14 +115,20 @@ function checkKey(e) {//按下按鍵時觸發的
         // down arrow
     }
     else if (e.keyCode == leftKey) {
-       if(timerOpen>0&&!startTimer) startTimer = true;
+       if(timerOpen>0&&!startTimer)
+       {
+        startTimer = true;
+       } 
        // left arrow
        leftKeyDown = true;
        velocityX = -1;
        horizontalMoving = true;          
     }
     else if (e.keyCode == rightKey) {
-       if(timerOpen>0&&!startTimer) startTimer = true;
+       if(timerOpen>0&&!startTimer)
+       {
+        startTimer = true;
+       } 
        // right arrow
        rightKeyDown = true;
        velocityX = 1;
@@ -143,10 +159,28 @@ function checkKey(e) {//按下按鍵時觸發的
         document.getElementById("timerStatusText").innerText = "Timer【ON/PassMode】:  ";
       }
     }
+    else if ( e.keyCode == '67')//c
+    {      
+      shadowMode = !shadowMode;
+      if(shadowMode) document.getElementById("shadowStatusText").innerText = "||ShadowMode【ON】:  ";
+      else document.getElementById("shadowStatusText").innerText = "||ShadowMode【OFF】:  ";
+    }
+    else if ( e.keyCode == '86')//c
+    {
+      shadowModeRec = !shadowModeRec;
+      if(shadowModeRec) document.getElementById("shadowRecText").innerText = "【REC:true】";
+      else document.getElementById("shadowRecText").innerText = "【REC:false】";    
+    }
+    else if ( e.keyCode == '66')//c
+    {
+      shadowPlay = !shadowPlay;
+      if(shadowPlay) document.getElementById("shadowPlayText").innerText = "【Play:true】";
+      else document.getElementById("shadowPlayText").innerText = "【Play:false】";     
+    }
 }
 
 function worldGravity()
-{  
+{
   if (chasing) chaseScreen();
   if (startTimer) updateTime();
   if (timerOpen>0) totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
@@ -310,6 +344,18 @@ function worldGravity()
     d3.select("#jumper").attr("cy",result[2]);
   }
   cantClimb = false;
+  if (shadowMode&& !stageClear && shadowModeRec) 
+  {
+    shadowLoaction[totalTimeCount]=[d3.select("#jumper").attr("cx"),d3.select("#jumper").attr("cy")];
+  }
+  if(startTimer&&shadowLoaction[totalTimeCount]!=0&&shadowPlay&&shadowMode)
+  {
+    if(typeof shadowLoaction[totalTimeCount] != "undefined")
+    {
+      d3.select("#shadow").attr("cx",shadowLoaction[totalTimeCount][0])
+                        .attr("cy",shadowLoaction[totalTimeCount][1]);
+    }    
+  }
 }
 
 function objectCollision(character,xDisplacement,yDisplacement,theObject)
@@ -519,6 +565,7 @@ function init()
 {/*cut screen
   d3.select("#basicSVG").attr("viewBox","0,300,500,500")
                         .attr("preserveAspectRatio","xMidYMid slice");*/
+  shadowLoaction = [];
   var interval_id = window.setInterval("", 9999); // Get a reference to the last
 
   intervalList = [];
@@ -550,6 +597,7 @@ function init()
   .attr("stroke-width","2")
   .attr("width","500")
   .attr("height","500");
+
   var stage = document.getElementById("stageSelect").value;
   //obstacleSet = stageSet[stage]["obstacleSet"];
   obstacleSet = JSON.parse(JSON.stringify(stageSet[stage]["obstacleSet"]));
@@ -607,6 +655,19 @@ function passTheStage()
 
 function Respawn()
 {
+  if( shadowMode &&!(d3.selectAll("#shadow")[0].length>0))
+  {
+    d3.select("#basicSVG").append("circle")
+    .attr("id","shadow")
+    .attr("cx","250")
+    .attr("cy","330")
+    .attr("r","10")
+    .attr("fill","#FF2D2D")
+    .attr("stroke","#ADADAD")
+    .attr("stroke-width","2")
+    .attr("width","500")
+    .attr("height","500");
+  }
   if( timerOpen == 2 ) restartTimer();
   stageReset();
   console.log(velocityY);
