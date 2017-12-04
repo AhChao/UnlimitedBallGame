@@ -195,7 +195,7 @@ var stageSet =
       "rightfloor":[500,520,-9999,500,"noClimb"],
       "start":[0,60,480,500,"noClimb"],
       "upfloor":[-100,600,-20,0,"noClimb"],
-
+      "deaTi":[200,460,60,80,"noClimb",0,100,3],
       
       "black1":[180,200,400,480,"cantPass"],
       
@@ -248,8 +248,7 @@ var stageSet =
       "obstacle104":[290,320,220,240,"noClimb",0,80,1],
       "obstacle105":[260,280,230,250,"noClimb",0,80,1.1],
       "obstacle110":[60,80,40,60,"dead",0,200,1],
-      "obstacle120":[0,40,0,40,"noClimb",460,0,5],
-      "obstacle130":[200,460,60,80,"noClimb",0,100,3],
+      "obstacle120":[0,40,0,40,"noClimb",460,0,5],      
     },
     "respawnPoint" : [30,440],
     //"respawnPoint" : [180,350],
