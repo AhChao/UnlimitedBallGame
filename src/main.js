@@ -177,13 +177,17 @@ function checkKey(e) {//按下按鍵時觸發的
       if(shadowPlay) document.getElementById("shadowPlayText").innerText = "【Play:true】";
       else document.getElementById("shadowPlayText").innerText = "【Play:false】";     
     }
+    else if ( e.keyCode == '82')//r
+    {
+      Respawn();  
+    }
 }
 
 function worldGravity()
 {
   if (chasing) chaseScreen();
   if (startTimer) updateTime();
-  if (timerOpen>0) totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
+  if (timerOpen>0&&startTimer) totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
   //dead
   if (d3.select("#jumper").attr("cy")>500+Number(ballRadius))//摔落下方邊界
   {
@@ -348,9 +352,13 @@ function worldGravity()
   {
     shadowLoaction[totalTimeCount]=[d3.select("#jumper").attr("cx"),d3.select("#jumper").attr("cy")];
   }
-  if(startTimer&&shadowLoaction[totalTimeCount]!=0&&shadowPlay&&shadowMode)
+  else if(shadowMode&& stageClear && shadowModeRec)
   {
-    if(typeof shadowLoaction[totalTimeCount] != "undefined")
+    shadowLoaction[totalTimeCount]=["",""];
+  }
+  if(startTimer&&shadowLoaction[totalTimeCount]!=0&&shadowPlay&&shadowMode )
+  {
+    if(typeof shadowLoaction[totalTimeCount] != "undefined" && shadowLoaction[totalTimeCount] != ["",""])
     {
       d3.select("#shadow").attr("cx",shadowLoaction[totalTimeCount][0])
                         .attr("cy",shadowLoaction[totalTimeCount][1]);
@@ -588,6 +596,17 @@ function init()
   .attr("width","500")
   .attr("height","500");
   d3.select("#basicSVG").append("circle")
+  .attr("id","shadow")
+  .attr("cx","250")
+  .attr("cy","330")
+  .attr("r","10")
+  .attr("fill","#FF2D2D")
+  .attr("stroke","#ADADAD")
+  .attr("stroke-width","2")
+  .attr("width","500")
+  .attr("height","500")
+  .attr("display","none");
+  d3.select("#basicSVG").append("circle")
   .attr("id","jumper")
   .attr("cx","250")
   .attr("cy","330")
@@ -655,18 +674,13 @@ function passTheStage()
 
 function Respawn()
 {
-  if( shadowMode &&!(d3.selectAll("#shadow")[0].length>0))
+  if( shadowMode && shadowPlay)
   {
-    d3.select("#basicSVG").append("circle")
-    .attr("id","shadow")
-    .attr("cx","250")
-    .attr("cy","330")
-    .attr("r","10")
-    .attr("fill","#FF2D2D")
-    .attr("stroke","#ADADAD")
-    .attr("stroke-width","2")
-    .attr("width","500")
-    .attr("height","500");
+    d3.select("#shadow").attr("display","true");
+  }
+  else
+  {
+    d3.select("#shadow").attr("display","none");
   }
   if( timerOpen == 2 ) restartTimer();
   stageReset();
