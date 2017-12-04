@@ -7,15 +7,16 @@
 	<h1 id="gameTitle">Unlimited Ball Game</h1>
 	<text>Choose Stage :</text>
 	<select id="stageSelect" onchange="init()">			
-		<!--<option value="WorkingStage">WorkingStage</option>-->
+		
 		<option value="1130IceMelted">1130IceMelted</option>
 		<option value="1129BumpBumpJump">1129BumpBumpJump</option>
 		<option value="1128PatientStage">1128PatientStage</option>
 		<option value="1124WeeklyChallenge">1124WeeklyChallenge</option>
 		<option value="BasicStage">BasicStage</option>
+		<option value="1204Move.gif">1204Move.gif(Buging)</option>
 	</select>	
 	<text>| Color of Ball:</text><input type="color" id="jumperColor" value="#FCE0CA"></input>
-	<button onclick="Respawn()">Respawn</button>
+	<button onclick="Respawn()" style="display: inline;">Respawn</button><button onclick="saveReplay()" style="display: inline;">SaveReplay</button><text> | LoadReplay:</text><input type="file" id="selectedFile" onchange="loadReplay(event)" style="display: inline";>
 	<h3><text id="timerStatusText">Timer【OFF】:  </text><text id="timerCount">0</text><text> second(s)</text>
 		<text id="shadowStatusText">||ShadowMode【OFF】:  </text><text id="shadowRecText">【REC:false】 </text><text id="shadowPlayText">【Play:false】 </text></h3>
 	<text>[z]To Restart Timer / [x]To Open Timer / [←][→]To move / [↑][Space]To jump and double jump / [c][v][b]For ShadowMode / [r]For Respawn</text><br>
@@ -38,5 +39,6 @@
 	<script type="text/javascript" src="./src/gamepadControll.js"></script>
 	<script type="text/javascript" src="./src/map.js"></script>
 	<script type="text/javascript" src="./src/main.js"></script>
+	<script type="text/javascript" src="./src/replaySave.js"></script>
 </body>
 </html>

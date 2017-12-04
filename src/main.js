@@ -16,6 +16,7 @@ var horizontalCount = 0;
 var slideOnWall = false;
 var cantClimb = false;
 //角色參數控制
+var ballColor = document.getElementById("jumperColor").value;
 var ballRespawn = [50,400];
 var ballRadius = 10;
 var timeInterval = 10;//0.01s
@@ -42,6 +43,8 @@ var gameStartInterval ;
 var movingInterval = null;
 var timerOpen = 0;//0=off 1=all 2=pass
 var startTimer = false;
+var stageStart = false;
+var setObjMove = false;
 var totalTimeCount = 0;
 var bottomY = 480;
 var minYScroll = 300;//Y卷軸相關速度
@@ -99,6 +102,10 @@ function checkKey(e) {//按下按鍵時觸發的
         {
          startTimer = true;
         } 
+        if(!stageStart)
+        {
+          stageStart = true;
+        }
         // up arrow         
         if(!jumpKeyDown)
         {
@@ -119,6 +126,10 @@ function checkKey(e) {//按下按鍵時觸發的
        {
         startTimer = true;
        } 
+       if(!stageStart)
+        {
+          stageStart = true;
+        }
        // left arrow
        leftKeyDown = true;
        velocityX = -1;
@@ -129,6 +140,10 @@ function checkKey(e) {//按下按鍵時觸發的
        {
         startTimer = true;
        } 
+       if(!stageStart)
+        {
+          stageStart = true;
+        }
        // right arrow
        rightKeyDown = true;
        velocityX = 1;
@@ -165,13 +180,13 @@ function checkKey(e) {//按下按鍵時觸發的
       if(shadowMode) document.getElementById("shadowStatusText").innerText = "||ShadowMode【ON】:  ";
       else document.getElementById("shadowStatusText").innerText = "||ShadowMode【OFF】:  ";
     }
-    else if ( e.keyCode == '86')//c
+    else if ( e.keyCode == '86')//v
     {
       shadowModeRec = !shadowModeRec;
       if(shadowModeRec) document.getElementById("shadowRecText").innerText = "【REC:true】";
       else document.getElementById("shadowRecText").innerText = "【REC:false】";    
     }
-    else if ( e.keyCode == '66')//c
+    else if ( e.keyCode == '66')//b
     {
       shadowPlay = !shadowPlay;
       if(shadowPlay) document.getElementById("shadowPlayText").innerText = "【Play:true】";
@@ -185,9 +200,14 @@ function checkKey(e) {//按下按鍵時觸發的
 
 function worldGravity()
 {
+  if(intervalList.length>0&&stageStart&&!setObjMove)
+  {
+    movingInterval = setInterval(function(){ letObstacleMoving();}, timeInterval);
+    setObjMove = true;
+  }
   if (chasing) chaseScreen();
-  if (startTimer) updateTime();
-  if (timerOpen>0&&startTimer) totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
+  if (timerOpen&&stageStart) updateTime();
+  if (timerOpen>0&&stageStart) totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
   //dead
   if (d3.select("#jumper").attr("cy")>500+Number(ballRadius))//摔落下方邊界
   {
@@ -348,17 +368,17 @@ function worldGravity()
     d3.select("#jumper").attr("cy",result[2]);
   }
   cantClimb = false;
-  if (shadowMode&& !stageClear && shadowModeRec) 
+  if (shadowMode&& !stageClear && shadowModeRec&&timerOpen>0) 
   {
     shadowLoaction[totalTimeCount]=[d3.select("#jumper").attr("cx"),d3.select("#jumper").attr("cy")];
   }
   else if(shadowMode&& stageClear && shadowModeRec)
   {
-    shadowLoaction[totalTimeCount]=["",""];
+    shadowLoaction[totalTimeCount]=[shadowLoaction[totalTimeCount-timeInterval][0],shadowLoaction[totalTimeCount- timeInterval ][1]];
   }
-  if(startTimer&&shadowLoaction[totalTimeCount]!=0&&shadowPlay&&shadowMode )
+  if(timerOpen>0&&shadowLoaction[totalTimeCount]!=0&&shadowPlay&&shadowMode )
   {
-    if(typeof shadowLoaction[totalTimeCount] != "undefined" && shadowLoaction[totalTimeCount] != ["",""])
+    if(typeof shadowLoaction[totalTimeCount] != "undefined")
     {
       d3.select("#shadow").attr("cx",shadowLoaction[totalTimeCount][0])
                         .attr("cy",shadowLoaction[totalTimeCount][1]);
@@ -574,7 +594,6 @@ function init()
   d3.select("#basicSVG").attr("viewBox","0,300,500,500")
                         .attr("preserveAspectRatio","xMidYMid slice");*/
   shadowLoaction = [];
-  var interval_id = window.setInterval("", 9999); // Get a reference to the last
 
   intervalList = [];
   stageClear = false;
@@ -611,7 +630,7 @@ function init()
   .attr("cx","250")
   .attr("cy","330")
   .attr("r","10")
-  .attr("fill","#FCE0CA")
+  .attr("fill",ballColor)
   .attr("stroke","black")
   .attr("stroke-width","2")
   .attr("width","500")
@@ -648,6 +667,7 @@ function updateTime()
 function restartTimer()
 {
   totalTimeCount = 0;
+  stageStart = false;
   startTimer = false;
   stageClear = false;
   d3.select("#logText").remove();
@@ -656,6 +676,7 @@ function restartTimer()
 
 function passTheStage()
 {
+  stageStart = false;
   startTimer = false;
   if(stageClear == false)
   {
@@ -683,13 +704,22 @@ function Respawn()
     d3.select("#shadow").attr("display","none");
   }
   if( timerOpen == 2 ) restartTimer();
+  if( stageStart ) stageStart = false;
+  if( setObjMove == true )
+  {
+    setObjMove = false;    
+    obstacleSet = JSON.parse(JSON.stringify(oriObstacleSet));
+    letObstacleMoving();
+    clearInterval(movingInterval);
+  }  
   stageReset();
   console.log(velocityY);
   stageClear = false;
+  ballColor = document.getElementById("jumperColor").value;
   d3.select("#logText").remove();
   d3.select("#jumper").attr("cx",ballRespawn[0])
                       .attr("cy",ballRespawn[1])
-                      .attr("fill",document.getElementById("jumperColor").value);  
+                      .attr("fill",ballColor);  
 }
 
 function stageReset()//for dead
@@ -745,15 +775,11 @@ function obstacleBuild(innerObstacleSet)
     'fill':color,
     'id': i,
     });
-    if(innerObstacleSet[i].length>5)//帶移動屬性
+    if(innerObstacleSet[i].length>7)//帶移動屬性
     {           
       intervalList.push(obstacleID);
-    }
-    if(intervalList.length>0)
-    {
-      movingInterval = setInterval(function(){ letObstacleMoving();}, timeInterval);
-    }
-  }
+    }    
+  }  
 }
 
 function letObstacleMoving()
@@ -766,17 +792,17 @@ function letObstacleMoving()
 
 function obstacleMoving(obsId) 
 {
-  var height = obstacleSet[obsId][3]-obstacleSet[obsId][2];
+  var height = obstacleSet[obsId][3]-obstacleSet[obsId][2];//形狀的長寬
   var width = obstacleSet[obsId][1]-obstacleSet[obsId][0];
-  var x = oriObstacleSet[obsId][0];
+  var x = oriObstacleSet[obsId][0];//原本的xy
   var y = oriObstacleSet[obsId][2];
-  var nowX = obstacleSet[obsId][0];
+  var nowX = obstacleSet[obsId][0];//現在移動中的xy
   var nowY = obstacleSet[obsId][2];
   //(Number(x) + Number(0.5*width))*(obstacleSet[obsId][5]>0 ? 1:-1) + Number(obstacleSet[obsId][5]);
-  var endPointX = Number(x) + Number(oriObstacleSet[obsId][5]);
+  var endPointX = Number(x) + Number(oriObstacleSet[obsId][5]);//折返點
   var endPointY = Number(y) + Number(oriObstacleSet[obsId][6]);
-  var moveTime = obstacleSet[obsId][7]*1000;
-  var xMoveDistance = obstacleSet[obsId][5]*( timeInterval / moveTime);
+  var moveTime = obstacleSet[obsId][7]*1000;//移動時間
+  var xMoveDistance = obstacleSet[obsId][5]*( timeInterval / moveTime);//時間單位移動距離
   var yMoveDistance = obstacleSet[obsId][6]*( timeInterval / moveTime);       
   var shouldBeX ;
   var shouldBeY ;
@@ -813,6 +839,8 @@ function obstacleMoving(obsId)
   }  
 
   var beforeResult = objectCollision("#jumper",0,0,obstacleSet[obsId]);
+
+  //if(obsId=="obstacle120"&&totalTimeCount%1000==0&&totalTimeCount) console.log(totalTimeCount/1000,"time",nowX,shouldBeX,xMoveDistance);
 
   obstacleSet[obsId][0] = shouldBeX;
   obstacleSet[obsId][1] = shouldBeX+width;

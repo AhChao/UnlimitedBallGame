@@ -187,24 +187,73 @@ var stageSet =
     "respawnPoint" : [50,420],
     "stageName" : "1130IceMelted",
   },
-  "WorkingStage" :
+  "1204Move.gif" :
   {
     "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
     {
       "leftfloor":[-10,0,-9999,500,"noClimb"],
-      //"rightfloor":[500,510,-9999,500,"noClimb"],
-      "downfloor":[40,700,480,500,"noClimb"],
-      //"upfloor":[-100,600,-20,0,"noClimb"],
-      "obstacle2":[190,210,400,480,"cantPass"],
-      "obstacle3":[50,150,350,370,"cantPass"],
+      "rightfloor":[500,520,-9999,500,"noClimb"],
+      "start":[0,60,480,500,"noClimb"],
+      "upfloor":[-100,600,-20,0,"noClimb"],
 
-      "obstacle1":[80,170,260,280,"cantPass",0,-200,3], 
-      "obstacle5":[20,40,300,320,"cantPass",0,-100,3],
-      "obstacle4":[170,210,260,280,"cantPass",200,0,5],       
+      
+      "black1":[180,200,400,480,"cantPass"],
+      
+      //"obstacle3":[50,150,340,360,"noClimb"],
+      "obstacle31":[150,170,300,360,"noClimb"],
+      "obstacle32":[150,230,280,300,"noClimb"],
+      "obstacle33":[210,230,300,360,"cantPass"],
 
+      "deadline":[230,400,340,360,"dead"],
+
+      "obstacle6":[270,290,460,480,"spring"],
+      "obstacle61":[360,380,460,480,"spring"],
+
+      "obstacle8":[470,490,300,320,"spring"], 
+      "deadline2":[150,500,180,200,"dead"], 
+
+      "black2":[0,20,180,280,"cantPass"], 
+      //"blue2":[0,20,100,180,"noClimb"], 
+
+      "org":[100,120,120,140,"spring"],
+      "blue3":[160,180,50,180,"noClimb"],
+
+      "dead1":[240,260,40,100,"dead"],
+      "dead11":[240,260,160,180,"dead"],
+      "dead2":[260,280,40,80,"dead"],
+      "dead21":[260,280,140,180,"dead"],
+      "dead3":[280,300,40,60,"dead"],
+      "dead31":[280,300,120,180,"dead"],
+
+      //"dead4":[320,340,40,60,"dead"],
+      //"dead41":[320,340,120,180,"dead"],
+      "dead5":[340,360,40,80,"dead"],
+      "dead51":[340,360,150,180,"dead"],
+      "dead6":[360,380,40,100,"dead"],
+      //"dead61":[360,380,160,180,"dead"],
+      "dead7":[380,400,40,80,"dead"],
+      //"dead71":[390,400,140,180,"dead"],
+      "dead8":[400,420,40,60,"dead"],
+      "dead81":[410,430,120,180,"dead"],
+
+      "dead9":[460,480,40,100,"dead"],
+      "goal":[460,500,160,180,"goal"],
+      
+      "openDoorRed":[80,140,360,380,"dead",0,100,2],
+      "obstacle7":[400,420,380,400,"cantPass",80,0,1],
+      "obstacle71":[390,410,460,480,"cantPass",90,0,1],
+      "obstacle101":[390,410,250,270,"cantPass",0,60,0.8],
+      "obstacle102":[360,380,230,250,"noClimb",0,60,1],
+      "obstacle103":[330,350,220,240,"noClimb",0,80,0.8],
+      "obstacle104":[290,320,220,240,"noClimb",0,80,1],
+      "obstacle105":[260,280,230,250,"noClimb",0,80,1.1],
+      "obstacle110":[60,80,40,60,"dead",0,200,1],
+      "obstacle120":[0,40,0,40,"noClimb",460,0,5],
+      "obstacle130":[200,460,60,80,"noClimb",0,100,3],
     },
-    "respawnPoint" : [50,420],
-    "stageName" : "WorkingStage",
+    "respawnPoint" : [30,440],
+    //"respawnPoint" : [180,350],
+    "stageName" : "1204Move.gif",
   },
   /*
   "WorkingStage" :
