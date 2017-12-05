@@ -29,6 +29,8 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var lockList = [];
+var nowlock = 0;
 var arriveTime;
 var deadmark = false;
 var intervalList = [];
@@ -482,6 +484,31 @@ function objectCollision(character,xDisplacement,yDisplacement,theObject,obstacl
       passTheStage();
     }
   }
+  else if(collisionObstacle[4]=="lock"&&obstacleID==lockList[nowlock])//碰到lock長出下一個lock
+  {
+    if(typeof lockList[Number(nowlock)+1] != "undefined")
+    {
+      console.log("touch",lockList[nowlock]);
+      var clearId = lockList[nowlock];
+      window.setTimeout(
+      function() {
+      d3.select("#"+clearId).remove();delete obstacleSet[clearId];}
+      , 100);      
+      nowlock++;
+      console.log("apper",lockList[nowlock]);
+      obstacleSet[lockList[nowlock]]=JSON.parse(JSON.stringify(oriObstacleSet[lockList[nowlock]]));
+      d3.select("#basicSVG").
+      append('rect').
+      attr({
+      'x':oriObstacleSet[lockList[nowlock]][0],
+      'y':oriObstacleSet[lockList[nowlock]][2],
+      'height':oriObstacleSet[lockList[nowlock]][3]-oriObstacleSet[lockList[nowlock]][2],
+      'width':oriObstacleSet[lockList[nowlock]][1]-oriObstacleSet[lockList[nowlock]][0],
+      'fill':"#FFD700",
+      'id': lockList[nowlock],
+      });
+    }
+  }
   else if(collisionObstacle[4]=="ice")
   {
     if((d3.selectAll("#"+obstacleID))[0].length>0)
@@ -524,7 +551,8 @@ function init()
   d3.select("#basicSVG").attr("viewBox","0,300,500,500")
                         .attr("preserveAspectRatio","xMidYMid slice");*/
   shadowLoaction = [];
-
+  lockList = [];
+  nowlock = 0;
   intervalList = [];
   stageClear = false;
   clearInterval(gameStartInterval);
@@ -568,8 +596,18 @@ function init()
 
   var stage = document.getElementById("stageSelect").value;
   //obstacleSet = stageSet[stage]["obstacleSet"];
-  obstacleSet = JSON.parse(JSON.stringify(stageSet[stage]["obstacleSet"]));
+  obstacleSet = JSON.parse(JSON.stringify(stageSet[stage]["obstacleSet"]));  
   oriObstacleSet = JSON.parse(JSON.stringify(stageSet[stage]["obstacleSet"]));
+
+  for(var i in obstacleSet)
+  {
+    if(obstacleSet[i][4]=="lock")
+    {
+      if(lockList.length>0)
+        delete obstacleSet[i];
+      lockList.push(i);
+    }
+  }
   //oriObstacleSet = stageSet[stage]["obstacleSet"];
   ballRespawn = stageSet[stage]["respawnPoint"];
   chasing = stageSet[stage]["chasing"];
@@ -626,7 +664,7 @@ function passTheStage()
 }
 
 function Respawn()
-{
+{    
   if( shadowMode && shadowPlay)
   {
     d3.select("#shadow").attr("display","true");
@@ -645,7 +683,6 @@ function Respawn()
     clearInterval(movingInterval);
   }  
   stageReset();
-  console.log(velocityY);
   stageClear = false;
   ballColor = document.getElementById("jumperColor").value;
   d3.select("#logText").remove();
@@ -656,6 +693,28 @@ function Respawn()
 
 function stageReset()//for dead
 {
+  nowlock = 0;
+  for(var j in lockList)
+  {    
+    if(d3.selectAll("#"+lockList[j])[0].length>0)//存在則消去
+    {
+      console.log(lockList[j]);
+      d3.select("#"+lockList[j]).remove();
+    }
+  }
+  if(lockList.length>0)
+  {
+    d3.select("#basicSVG").
+    append('rect').
+    attr({
+    'x':oriObstacleSet[lockList[0]][0],
+    'y':oriObstacleSet[lockList[0]][2],
+    'height':oriObstacleSet[lockList[0]][3]-oriObstacleSet[lockList[0]][2],
+    'width':oriObstacleSet[lockList[0]][1]-oriObstacleSet[lockList[0]][0],
+    'fill':"#FFD700",
+    'id': lockList[0],
+    });
+  }
   for(var i in oriObstacleSet)
   {
     height = oriObstacleSet[i][3]-oriObstacleSet[i][2];
@@ -697,16 +756,21 @@ function obstacleBuild(innerObstacleSet)
     else if(innerObstacleSet[i][4]=="passable") color="gray";
     else if(innerObstacleSet[i][4]=="cantPass") color="black";
     else if(innerObstacleSet[i][4]=="ice") color="#33FFDD";
-    d3.select("#basicSVG").
-    append('rect').
-    attr({
-    'x':x,
-    'y':y,
-    'height':height,
-    'width':width,
-    'fill':color,
-    'id': i,
-    });
+    else if(innerObstacleSet[i][4]=="lock") color="#FFD700";
+    
+    if(innerObstacleSet[i][4]!="lock"||lockList[0]==i)
+    {
+      d3.select("#basicSVG").
+      append('rect').
+      attr({
+      'x':x,
+      'y':y,
+      'height':height,
+      'width':width,
+      'fill':color,
+      'id': i,
+      });
+    }
     if(innerObstacleSet[i].length>7)//帶移動屬性
     {           
       intervalList.push(obstacleID);
@@ -781,6 +845,8 @@ function obstacleMoving(obsId)
   d3.select("#"+obsId).attr("x",shouldBeX)
                       .attr("y",shouldBeY);
 
+  //載者跟著動                    
+  //上下碰撞部分
   var checkResult = objectCollision("#jumper",0,touchTolerance,obstacleSet[obsId],obsId);
   if(checkResult[0]==false) checkResult = objectCollision("#jumper",0,-touchTolerance,obstacleSet[obsId],obsId);
   if(beforeResult[0]==false&&checkResult[0]==true&&(checkResult[4]=="top"||checkResult[4]=="bot"))//向上搭電梯
@@ -799,7 +865,7 @@ function obstacleMoving(obsId)
     d3.select("#jumper").attr("cx", Number( jumperX ) + Number(xMoveDistance*direction));
     d3.select("#jumper").attr("cy", Number( jumperY ) + Number(yMoveDistance*direction));
   }
-
+  //左右移動部分
   checkResult = objectCollision("#jumper",touchTolerance,0,obstacleSet[obsId],obsId);
   if(checkResult[0])
   {

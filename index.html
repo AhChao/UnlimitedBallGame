@@ -7,13 +7,13 @@
 	<h1 id="gameTitle">Unlimited Ball Game</h1>
 	<text>Choose Stage :</text>
 	<select id="stageSelect" onchange="init()">			
-		
+		<option value="1205TryToUnlock">1205TryToUnlock</option>
+		<option value="1204Move.gif">1204Move.gif(Buging)</option>
 		<option value="1130IceMelted">1130IceMelted</option>
 		<option value="1129BumpBumpJump">1129BumpBumpJump</option>
 		<option value="1128PatientStage">1128PatientStage</option>
 		<option value="1124WeeklyChallenge">1124WeeklyChallenge</option>
-		<option value="BasicStage">BasicStage</option>
-		<option value="1204Move.gif">1204Move.gif(Buging)</option>
+		<option value="BasicStage">BasicStage</option>		
 	</select>	
 	<text>| Color of Ball:</text><input type="color" id="jumperColor" value="#FCE0CA"></input>
 	<button onclick="Respawn()" style="display: inline;">Respawn</button><button onclick="saveReplay()" style="display: inline;">SaveReplay</button><text> | LoadReplay:</text><input type="file" id="selectedFile" onchange="loadReplay(event)" style="display: inline";>

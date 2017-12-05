@@ -238,7 +238,7 @@ var stageSet =
       "dead8":[400,420,40,60,"dead"],
       "dead81":[410,430,120,180,"dead"],
 
-      "dead9":[460,480,40,100,"dead"],
+      "dead9":[460,475,40,100,"dead"],
       "goal":[460,500,160,180,"goal"],
       
       "openDoorRed":[80,140,360,380,"dead",0,100,2],
@@ -255,6 +255,59 @@ var stageSet =
     "respawnPoint" : [30,440],
     //"respawnPoint" : [180,350],
     "stageName" : "1204Move.gif",
+  },
+  "1205TryToUnlock" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[0,20,-9999,500,"noClimb"],
+      "rightfloor":[480,500,-9999,500,"noClimb"],
+      //"downfloor":[40,700,480,500,"noClimb"],
+      //"upfloor":[-100,600,-20,0,"noClimb"],
+
+      "obstacle11":[60,80,330,350,"ice"],
+      "obstacle12":[20,40,330,350,"ice"],
+      "obstacle13":[40,60,330,350,"ice"],
+      "obstacle14":[60,80,310,330,"ice"],
+      "obstacle15":[40,60,310,330,"ice"],
+      "obstacle16":[60,80,290,310,"ice"],
+      "obstacle17":[20,40,290,310,"ice"],
+      "obstacle18":[40,60,290,310,"ice"],
+
+      "obstacle21":[440,460,330,350,"ice"],
+      "obstacle22":[460,480,330,350,"ice"],
+      "obstacle23":[420,440,330,350,"ice"],
+      "obstacle24":[440,460,310,330,"ice"],
+      "obstacle25":[420,440,310,330,"ice"],
+      "obstacle26":[440,460,290,310,"ice"],
+      "obstacle27":[460,480,290,310,"ice"],
+      "obstacle28":[420,440,290,310,"ice"],
+
+      "deadDoorL":[60,220,200,220,"dead"],
+      "deadDoorR":[280,480,200,220,"dead"],
+
+      "goal":[20,60,200,220,"goal"],
+
+      "blueDoor":[200,220,40,200,"noClimb"],
+      "blueDoor2":[200,400,40,60,"noClimb"],
+
+      "wish1":[20,40,50,70,"dead",160,0,3],
+      "wish2":[20,40,100,120,"dead",160,0,4],
+      "wish3":[20,40,150,170,"dead",160,0,5],
+      
+      "sitdown":[20,80,440,460,"cantPass",400,0,3],
+      "sitdownUp":[240,260,140,160,"spring",200,0,3],
+      "hoLiBe":[460,480,40,80,"cantPass"],
+
+      "lock1":[20,40,310,330,"lock"],
+      "lock2":[460,480,310,330,"lock"],
+      "lock3":[200,220,400,420,"lock"],
+      "lock4":[280,300,340,360,"lock"],
+      "lock5":[220,240,280,300,"lock"],
+      "lock6":[260,280,220,240,"lock"],
+    },
+    "respawnPoint" : [50,430],
+    "stageName" : "1205TryToUnlock",
   },
   /*
   "WorkingStage" :
