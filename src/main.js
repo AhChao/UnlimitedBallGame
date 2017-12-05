@@ -267,11 +267,11 @@ function worldGravity()
       }
       else //平常撞到的時候
       {
-       if(result[3]=="noClimb")
+       if(result[3]=="noClimb"||result[3]=="spring")
        {
         cantClimb = true;
-        jumping = false;
-       }              
+        //jumping = false;
+       }             
        horizontalMoving = false;//撞到要停下移動狀態
        horizontalCount = 0;
        if(result[3]=="dead")
