@@ -495,7 +495,7 @@ function objectCollision(character,xDisplacement,yDisplacement,theObject,obstacl
       , 100);
       nowlock = nowlock+1;
       obstacleSet[lockList[nowlock]]=JSON.parse(JSON.stringify(oriObstacleSet[lockList[nowlock]]));
-      d3.select("#"+lockList[nowlock]).attr("fill","#FFD700");      
+      d3.select("#"+lockList[nowlock]).attr("fill","#FFD700").attr("stroke","none");      
     }
     if(typeof lockList[Number(nowlock)+1] != "undefined")//加過1的算式=+2 如果還有就預顯示
     {
@@ -508,6 +508,9 @@ function objectCollision(character,xDisplacement,yDisplacement,theObject,obstacl
       'width':oriObstacleSet[lockList[Number(nowlock)+1]][1]-oriObstacleSet[lockList[Number(nowlock)+1]][0],
       'fill':"#FFE66F",
       'id': lockList[Number(nowlock)+1],
+      'fill':"none",
+      'stroke':"black",
+      'stroke-dasharray':"1",
       });
     }
   }
@@ -696,19 +699,28 @@ function Respawn()
 function stageReset()//for dead
 {
   nowlock = 0;
+  for(var i in obstacleSet)
+  {
+    if(obstacleSet[i][4]=="lock")
+    {
+      if(lockList.length>1)
+        delete obstacleSet[i];
+    }
+  }
+
   for(var j in lockList)
   {    
     if(d3.selectAll("#"+lockList[j])[0].length>0)//存在則消去
     {
-      d3.select("#"+lockList[j]).remove();
-      delete obstacleSet[lockList[j]]
+      d3.select("#"+lockList[j]).remove();      
     }
   }  
+
   if(lockList.length>0)
   {
     for(var i in oriObstacleSet)//把第一個的實體塞回去
     {
-      if(oriObstacleSet[i][4]=="lock")
+      if(oriObstacleSet[i][4]=="lock"&&lockList[0]==i)
       {
         obstacleSet[i] = JSON.parse(JSON.stringify(oriObstacleSet[i]));
         break;
@@ -731,8 +743,10 @@ function stageReset()//for dead
     'y':oriObstacleSet[lockList[1]][2],
     'height':oriObstacleSet[lockList[1]][3]-oriObstacleSet[lockList[1]][2],
     'width':oriObstacleSet[lockList[1]][1]-oriObstacleSet[lockList[1]][0],
-    'fill':"#FFFF77",
     'id': lockList[1],
+    'fill':"none",
+    'stroke':"black",
+    'stroke-dasharray':"1",
     });
   }
   for(var i in oriObstacleSet)
@@ -800,7 +814,9 @@ function obstacleBuild(innerObstacleSet)
       'y':y,
       'height':height,
       'width':width,
-      'fill':"#FFE66F",
+      'fill':"none",
+      'stroke':"black",
+      'stroke-dasharray':"1",
       'id': i,
       });
     }
