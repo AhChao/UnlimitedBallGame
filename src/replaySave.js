@@ -1,7 +1,7 @@
 function saveReplay()
 {	
 	var jsonFinData = JSON.stringify(shadowLoaction);
-	var name = document.getElementById("stageSelect").value+"Replay.txt";
+	var name = document.getElementById("stageSelect").value+"RP"+arriveTime+".txt";
 	var type = "text/plain"
     var a = document.createElement("a");
     var file = new Blob([jsonFinData], {type: type});

@@ -29,6 +29,7 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var arriveTime;
 var intervalList = [];
 var stageClear =false ;
 var shadowMode = false;
@@ -678,6 +679,8 @@ function passTheStage()
 {
   stageStart = false;
   startTimer = false;
+  updateTime();
+  arriveTime = totalTimeCount/1000;
   if(stageClear == false)
   {
     d3.select("#basicSVG").append("text")
