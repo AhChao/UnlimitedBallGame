@@ -484,28 +484,30 @@ function objectCollision(character,xDisplacement,yDisplacement,theObject,obstacl
       passTheStage();
     }
   }
-  else if(collisionObstacle[4]=="lock"&&obstacleID==lockList[nowlock])//碰到lock長出下一個lock
+  else if(collisionObstacle[4]=="lock"&&obstacleID==lockList[nowlock])//碰到lock長出下一個lock實體，長出下下一個lock形體
   {
     if(typeof lockList[Number(nowlock)+1] != "undefined")
     {
-      console.log("touch",lockList[nowlock]);
       var clearId = lockList[nowlock];
       window.setTimeout(
       function() {
       d3.select("#"+clearId).remove();delete obstacleSet[clearId];}
-      , 100);      
-      nowlock++;
-      console.log("apper",lockList[nowlock]);
+      , 100);
+      nowlock = nowlock+1;
       obstacleSet[lockList[nowlock]]=JSON.parse(JSON.stringify(oriObstacleSet[lockList[nowlock]]));
+      d3.select("#"+lockList[nowlock]).attr("fill","#FFD700");      
+    }
+    if(typeof lockList[Number(nowlock)+1] != "undefined")//加過1的算式=+2 如果還有就預顯示
+    {
       d3.select("#basicSVG").
       append('rect').
       attr({
-      'x':oriObstacleSet[lockList[nowlock]][0],
-      'y':oriObstacleSet[lockList[nowlock]][2],
-      'height':oriObstacleSet[lockList[nowlock]][3]-oriObstacleSet[lockList[nowlock]][2],
-      'width':oriObstacleSet[lockList[nowlock]][1]-oriObstacleSet[lockList[nowlock]][0],
-      'fill':"#FFD700",
-      'id': lockList[nowlock],
+      'x':oriObstacleSet[lockList[Number(nowlock)+1]][0],
+      'y':oriObstacleSet[lockList[Number(nowlock)+1]][2],
+      'height':oriObstacleSet[lockList[Number(nowlock)+1]][3]-oriObstacleSet[lockList[Number(nowlock)+1]][2],
+      'width':oriObstacleSet[lockList[Number(nowlock)+1]][1]-oriObstacleSet[lockList[Number(nowlock)+1]][0],
+      'fill':"#FFE66F",
+      'id': lockList[Number(nowlock)+1],
       });
     }
   }
@@ -603,7 +605,7 @@ function init()
   {
     if(obstacleSet[i][4]=="lock")
     {
-      if(lockList.length>0)
+      if(lockList.length>1)
         delete obstacleSet[i];
       lockList.push(i);
     }
@@ -698,12 +700,20 @@ function stageReset()//for dead
   {    
     if(d3.selectAll("#"+lockList[j])[0].length>0)//存在則消去
     {
-      console.log(lockList[j]);
       d3.select("#"+lockList[j]).remove();
+      delete obstacleSet[lockList[j]]
     }
-  }
+  }  
   if(lockList.length>0)
   {
+    for(var i in oriObstacleSet)//把第一個的實體塞回去
+    {
+      if(oriObstacleSet[i][4]=="lock")
+      {
+        obstacleSet[i] = JSON.parse(JSON.stringify(oriObstacleSet[i]));
+        break;
+      }
+    }
     d3.select("#basicSVG").
     append('rect').
     attr({
@@ -713,6 +723,16 @@ function stageReset()//for dead
     'width':oriObstacleSet[lockList[0]][1]-oriObstacleSet[lockList[0]][0],
     'fill':"#FFD700",
     'id': lockList[0],
+    });
+    d3.select("#basicSVG").
+    append('rect').
+    attr({
+    'x':oriObstacleSet[lockList[1]][0],
+    'y':oriObstacleSet[lockList[1]][2],
+    'height':oriObstacleSet[lockList[1]][3]-oriObstacleSet[lockList[1]][2],
+    'width':oriObstacleSet[lockList[1]][1]-oriObstacleSet[lockList[1]][0],
+    'fill':"#FFFF77",
+    'id': lockList[1],
     });
   }
   for(var i in oriObstacleSet)
@@ -768,6 +788,19 @@ function obstacleBuild(innerObstacleSet)
       'height':height,
       'width':width,
       'fill':color,
+      'id': i,
+      });
+    }
+    if(innerObstacleSet[i][4]=="lock"&&lockList[1]==i)//預產生
+    {
+      d3.select("#basicSVG").
+      append('rect').
+      attr({
+      'x':x,
+      'y':y,
+      'height':height,
+      'width':width,
+      'fill':"#FFE66F",
       'id': i,
       });
     }
