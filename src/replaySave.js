@@ -12,12 +12,13 @@ function saveReplay()
 
 var loadReplay = function(event) 
 {
-        var input = event.target;
-        var reader = new FileReader();
-        reader.onload = function(){
-	        var text = reader.result;
-	        var oldData = JSON.parse(text);
-	        shadowLoaction = oldData;
-        };
-        reader.readAsText(input.files[0]);        
+	document.activeElement.blur();
+    var input = event.target;
+    var reader = new FileReader();
+    reader.onload = function(){
+        var text = reader.result;
+        var oldData = JSON.parse(text);
+        shadowLoaction = oldData;
+    };
+    reader.readAsText(input.files[0]);
 };
