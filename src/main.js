@@ -30,6 +30,7 @@ var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
 var arriveTime;
+var deadmark = false;
 var intervalList = [];
 var stageClear =false ;
 var shadowMode = false;
@@ -201,6 +202,11 @@ function checkKey(e) {//按下按鍵時觸發的
 
 function worldGravity()
 {
+  if(deadmark)
+  {
+    deadmark = false;
+    Respawn();
+  }
   if(intervalList.length>0&&stageStart&&!setObjMove)
   {
     movingInterval = setInterval(function(){ letObstacleMoving();}, timeInterval);
@@ -276,7 +282,7 @@ function worldGravity()
        horizontalCount = 0;
        if(result[3]=="dead")
        {
-        Respawn();
+        //Respawn();
         cantClimb = true;
         jumping = false;
        }          
@@ -289,7 +295,7 @@ function worldGravity()
     }
     else
     {
-      Respawn();
+      //Respawn();
     }    
     horizontalCount = Number(horizontalCount)+Math.abs(result[1]-orix);
     if(horizontalCount>=horizontalDistance || result[3] =="dead")
@@ -304,10 +310,10 @@ function worldGravity()
   if(result[0])
   {
     onTheObstacle=true;
-    if(result[3]=="dead")
+    /*if(result[3]=="dead")
      {
       Respawn();
-     }
+     }*/
     if(result[3]=="spring")
     {
       jumping = true;
@@ -358,13 +364,6 @@ function worldGravity()
     var collisionObstacle=[0,0,0,0,0];
     
     var result = collisionDetection("#jumper",0,distanceY);
-    /*if(result[3]=="spring")
-    {
-      console.log("7pupu");
-      jumping = true;
-      jumpTimes = 1;
-      dropTime = 0;
-    }*/
     d3.select("#jumper").attr("cx",result[1]);
     d3.select("#jumper").attr("cy",result[2]);
   }
@@ -387,7 +386,7 @@ function worldGravity()
   }
 }
 
-function objectCollision(character,xDisplacement,yDisplacement,theObject)
+function objectCollision(character,xDisplacement,yDisplacement,theObject,obstacleID)
 {
   var orix = d3.select(character).attr("cx");
   var oriy = d3.select(character).attr("cy");
@@ -395,6 +394,7 @@ function objectCollision(character,xDisplacement,yDisplacement,theObject)
   var changedY = Number(oriy)+yDisplacement;
   var positionShouldBe = [false,changedX,changedY,""];//collision?,x,y,屬性,障礙物被撞到的方向
   var collisionObstacle = [0,0,0,0,""];
+
   if(xDisplacement)//判斷左右碰撞
   {
     //先判斷位移前&&位移後上下同高，再判斷左右穿越
@@ -461,107 +461,16 @@ function objectCollision(character,xDisplacement,yDisplacement,theObject)
       }        
     }
   }
-  if(positionShouldBe[0]==true)
+  if(positionShouldBe[0]==true)//有撞到的話記錄撞到方向
   {
     positionShouldBe[3]=collisionObstacle[4];
-  }
-  return positionShouldBe;
-}
-
-function collisionDetection(character,xDisplacement,yDisplacement)
-{  
-  var orix = d3.select(character).attr("cx");
-  var oriy = d3.select(character).attr("cy");
-  var changedX = Number(orix)+xDisplacement;
-  var changedY = Number(oriy)+yDisplacement;
-  var positionShouldBe = [false,changedX,changedY,""];//collision?,x,y,屬性,障礙物被撞到的方向
-  var collisionObstacle = [0,0,0,0,""];
-  var obstacleID = "";
-
-  for (var i in obstacleSet)//遍歷所有障礙物
-  {
-    if(xDisplacement!=0)//判斷左右碰撞
-    {
-      //先判斷位移前&&位移後上下同高，再判斷左右穿越
-      if((Number(oriy)-Number(ballRadius)<obstacleSet[i][3]&&Number(oriy)-Number(ballRadius)>obstacleSet[i][2])||
-          (Number(oriy)+Number(ballRadius)<obstacleSet[i][3]&&Number(oriy)+Number(ballRadius)>obstacleSet[i][2])||
-          (Number(oriy)<obstacleSet[i][3]&&Number(oriy)>obstacleSet[i][2]))
-      {
-        if((Number(changedY)-Number(ballRadius)<obstacleSet[i][3]&&Number(changedY)-Number(ballRadius)>obstacleSet[i][2])||
-          (Number(changedY)+Number(ballRadius)<obstacleSet[i][3]&&Number(changedY)+Number(ballRadius)>obstacleSet[i][2])||
-          (Number(changedY)<obstacleSet[i][3]&&Number(changedY)>obstacleSet[i][2]))
-        { //左碰撞:球右緣本來在他左邊 進去後撞到右邊
-          if(Number(orix)+Number(ballRadius)<=obstacleSet[i][0]&&Number(changedX)+Number(ballRadius)>=obstacleSet[i][0])
-          {            
-            collisionObstacle = obstacleSet[i];
-            obstacleID = i;
-            positionShouldBe[0]=true;
-            positionShouldBe[1]=obstacleSet[i][0]-ballRadius;
-            positionShouldBe[4]="left";
-          }
-          //右碰撞:球左緣本來在他的右邊 進去後撞到右邊
-          else if(Number(orix)-Number(ballRadius)>=obstacleSet[i][1]&&Number(changedX)-Number(ballRadius)<=obstacleSet[i][1])
-          {
-            collisionObstacle = obstacleSet[i];
-            obstacleID = i;
-            positionShouldBe[0]=true;
-            positionShouldBe[1]=obstacleSet[i][1]+ballRadius;
-            positionShouldBe[4]="right";
-          }
-        }
-      }
-    }
-    if(positionShouldBe[0]==true)
-    {
-      positionShouldBe[3]=collisionObstacle[4];
-      break;//已發生碰撞
-    } 
-    if(yDisplacement!=0)//判斷上下碰撞
-    {
-      //先判斷位移前&&位移後左右同範圍，再判斷上下穿越
-      if((Number(orix)-Number(ballRadius)>obstacleSet[i][0]&&Number(orix)-Number(ballRadius)<obstacleSet[i][1])||
-         (Number(orix)+Number(ballRadius)>obstacleSet[i][0]&&Number(orix)+Number(ballRadius)<obstacleSet[i][1])||
-         (Number(orix)>obstacleSet[i][0]&&Number(orix)<obstacleSet[i][1]))
-      {
-        if((Number(changedX)-Number(ballRadius)>obstacleSet[i][0]&&Number(changedX)-Number(ballRadius)<obstacleSet[i][1])||
-           (Number(changedX)+Number(ballRadius)>obstacleSet[i][0]&&Number(changedX)+Number(ballRadius)<obstacleSet[i][1])||
-           (Number(changedX)>obstacleSet[i][0]&&Number(changedX)<obstacleSet[i][1]))
-        { 
-          //上碰撞:球下緣本來在他的上邊 進去後撞到上邊          
-          if(Number(oriy)+Number(ballRadius)<=obstacleSet[i][2]&&Number(changedY)+Number(ballRadius)>=obstacleSet[i][2]||
-             Number(oriy)+Number(ballRadius)<=obstacleSet[i][3]&&Number(changedY)+Number(ballRadius)>=obstacleSet[i][3])
-          {            
-            collisionObstacle=obstacleSet[i];
-            obstacleID = i;
-            positionShouldBe[0]=true;
-            positionShouldBe[2]=obstacleSet[i][2]-ballRadius;
-            positionShouldBe[4]="top";          
-          }
-          //下碰撞:球上緣本來在他的下邊 進去後撞到下邊
-          else if(((Number(oriy)-Number(ballRadius)>=obstacleSet[i][3]&&Number(changedY)-Number(ballRadius)<=obstacleSet[i][3])||
-                  (Number(oriy)-Number(ballRadius)>=obstacleSet[i][2]&&Number(changedY)-Number(ballRadius)<=obstacleSet[i][2]))&&
-                  obstacleSet[i][4]!="passable")
-          {
-           collisionObstacle=obstacleSet[i];
-           obstacleID = i;
-           positionShouldBe[0]=true;
-           positionShouldBe[2]=obstacleSet[i][3]+ballRadius;
-           positionShouldBe[4]="bot";
-          }
-        }        
-      }
-    }
-    if(positionShouldBe[0]==true)
-    {
-      positionShouldBe[3]=collisionObstacle[4];//複製方塊屬性
-      break;//已發生碰撞
-    } 
   }
 
   if(collisionObstacle[4]=="dead")
   {
     positionShouldBe[1]=ballRespawn[0];
     positionShouldBe[2]=ballRespawn[1];
+    deadmark = true;
   }
   else if(collisionObstacle[4]=="goal")
   {
@@ -588,6 +497,26 @@ function collisionDetection(character,xDisplacement,yDisplacement)
     }
   }
   return positionShouldBe;
+}
+
+function collisionDetection(character,xDisplacement,yDisplacement)
+{  
+  var orix = d3.select(character).attr("cx");
+  var oriy = d3.select(character).attr("cy");
+  var changedX = Number(orix)+xDisplacement;
+  var changedY = Number(oriy)+yDisplacement;
+  var positionShouldBe = [false,changedX,changedY,""];//collision?,x,y,屬性,障礙物被撞到的方向
+  var collisionObstacle = [0,0,0,0,""];
+  var obstacleID = "";
+  var singleResult;
+
+  for (var i in obstacleSet)
+  {
+    singleResult = objectCollision("#jumper",xDisplacement,yDisplacement,obstacleSet[i],i);
+    if(singleResult[0]==true) break;
+  }
+  return singleResult;
+
 }
 
 function init()
@@ -841,7 +770,7 @@ function obstacleMoving(obsId)
     shouldBeY = Number(nowY)+Number(yMoveDistance);
   }  
 
-  var beforeResult = objectCollision("#jumper",0,0,obstacleSet[obsId]);
+  var beforeResult = objectCollision("#jumper",0,0,obstacleSet[obsId],obsId);
 
   //if(obsId=="obstacle120"&&totalTimeCount%1000==0&&totalTimeCount) console.log(totalTimeCount/1000,"time",nowX,shouldBeX,xMoveDistance);
 
@@ -852,8 +781,8 @@ function obstacleMoving(obsId)
   d3.select("#"+obsId).attr("x",shouldBeX)
                       .attr("y",shouldBeY);
 
-  var checkResult = objectCollision("#jumper",0,touchTolerance,obstacleSet[obsId]);
-  if(checkResult[0]==false) checkResult = objectCollision("#jumper",0,-touchTolerance,obstacleSet[obsId]);
+  var checkResult = objectCollision("#jumper",0,touchTolerance,obstacleSet[obsId],obsId);
+  if(checkResult[0]==false) checkResult = objectCollision("#jumper",0,-touchTolerance,obstacleSet[obsId],obsId);
   if(beforeResult[0]==false&&checkResult[0]==true&&(checkResult[4]=="top"||checkResult[4]=="bot"))//向上搭電梯
   {
     var jumperX = d3.select("#jumper").attr("cx");
@@ -871,7 +800,7 @@ function obstacleMoving(obsId)
     d3.select("#jumper").attr("cy", Number( jumperY ) + Number(yMoveDistance*direction));
   }
 
-  checkResult = objectCollision("#jumper",touchTolerance,0,obstacleSet[obsId]);
+  checkResult = objectCollision("#jumper",touchTolerance,0,obstacleSet[obsId],obsId);
   if(checkResult[0])
   {
     d3.select("#jumper").attr("cx", checkResult[1]);
@@ -879,7 +808,7 @@ function obstacleMoving(obsId)
   }
   else
   {
-    checkResult = objectCollision("#jumper",-touchTolerance,0,obstacleSet[obsId]);
+    checkResult = objectCollision("#jumper",-touchTolerance,0,obstacleSet[obsId],obsId);
     if(checkResult[0])
     {
       d3.select("#jumper").attr("cx", checkResult[1]);
