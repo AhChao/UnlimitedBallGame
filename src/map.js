@@ -309,6 +309,64 @@ var stageSet =
     "respawnPoint" : [50,430],
     "stageName" : "1205TryToUnlock",
   },
+  "1206PurpleStars" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[150,170,-9999,500,"noClimb"],
+      "rightfloor":[330,350,-9999,500,"noClimb"],
+      //"downfloor":[40,700,300,320,"noClimb"],
+      //"upfloor":[-100,600,-20,0,"noClimb"],
+
+      "upfloor":[-100,600,-20,0,"noClimb"],
+
+      "standStone":[205,225,380,400,"cantPass"],
+      "standStone2":[170,190,300,320,"cantPass"],
+      "standStone3":[240,260,300,320,"cantPass"],
+      "standStone4":[310,330,300,320,"cantPass"],
+      "standStone5":[275,295,380,400,"cantPass"],
+      "standStone6":[170,190,460,480,"cantPass"],
+      "standStone7":[240,260,460,480,"cantPass"],
+      "standStone8":[310,330,460,480,"cantPass"],
+
+      "star1":[170,220,-20,0,"dead",0,1000,5,,"once"],
+      "star2":[280,330,-20,0,"dead",0,1000,5,,"once"],
+      "star3":[200,300,-240,-220,"dead",0,1000,5,,"once"],
+      "star4":[170,250,-440,-420,"dead",0,1000,5,,"once"],
+      "star5":[250,330,-640,-620,"dead",0,2000,12,,"once"],
+      "star6":[170,190,-840,-820,"dead",0,2000,12,,"once"],
+      "star7":[190,210,-890,-870,"dead",0,2000,12,,"once"],
+      "star8":[210,230,-940,-920,"dead",0,2000,12,,"once"],
+      "star9":[230,250,-990,-970,"dead",0,2000,12,,"once"],
+      "star10":[250,270,-1040,-1020,"dead",0,2000,12,,"once"],
+      "star11":[270,290,-1090,-1070,"dead",0,2000,12,,"once"],
+      "star12":[290,330,-1240,-1220,"dead",0,2000,12,,"once"],
+
+      "star13":[270,290,-1440,-1420,"dead",0,3000,18,,"once"],
+      "star14":[250,270,-1490,-1470,"dead",0,3000,18,,"once"],
+      "star15":[230,250,-1540,-1520,"dead",0,3000,18,,"once"],
+      "star16":[210,230,-1590,-1570,"dead",0,3000,18,,"once"],
+      "star17":[190,210,-1640,-1620,"dead",0,3000,18,,"once"],
+      "star18":[290,330,-1690,-1670,"dead",0,3000,18,,"once"],
+      "star19":[170,190,-1690,-1670,"dead",0,3000,18,,"once"],
+
+      "star20":[240,350,-1990,-1970,"dead",0,3000,18,,"once"],
+      "star21":[170,200,-1990,-1970,"dead",0,3000,18,,"once"],
+
+      "star22":[290,350,-2290,-2270,"dead",0,3000,18,,"once"],
+      "star23":[170,250,-2290,-2270,"dead",0,3000,18,,"once"],
+
+      "star24":[230,350,-2590,-2570,"dead",0,3000,18,,"once"],
+      "star25":[170,270,-2890,-2870,"dead",0,3000,18,,"once"],
+
+      "star26":[255,275,-2890,-2870,"spring",0,3120,18.72,,"once"],
+      "star27":[310,330,-2970,-2950,"spring",0,3120,18.72,,"once"],
+      "goal":[270,290,80,100,"goal"],
+    },
+    "respawnPoint" : [250,250],
+    "stageName" : "1206PurpleStars",
+  },
+  /*
   "WorkingStage" :
   {
     "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
@@ -320,7 +378,9 @@ var stageSet =
     },
     "respawnPoint" : [50,420],
     "stageName" : "WorkingStage",
-  },
+    "chasing" : "true",
+  },*/
+  /*
   "Lodi" :
   {
     "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
@@ -369,19 +429,5 @@ var stageSet =
     "respawnPoint" : [50,460],
     "stageName" : "Lodi",
     "chasing" : "true",
-  },
-  /*
-  "WorkingStage" :
-  {
-    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
-    {
-      "leftfloor":[-10,0,-9999,500,"noClimb"],
-      //"rightfloor":[500,510,-9999,500,"noClimb"],
-      "downfloor":[40,700,480,500,"noClimb"],
-      //"upfloor":[-100,600,-20,0,"noClimb"],
-    },
-    "respawnPoint" : [50,420],
-    "stageName" : "WorkingStage",
-    "chasing" : "true",
-  },*/
+  },*/  
 }

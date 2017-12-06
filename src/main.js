@@ -850,10 +850,13 @@ function obstacleMoving(obsId)
   var moveTime = obstacleSet[obsId][7]*1000;//移動時間
   var xMoveDistance = obstacleSet[obsId][5]*( timeInterval / moveTime);//時間單位移動距離
   var yMoveDistance = obstacleSet[obsId][6]*( timeInterval / moveTime);       
-  var shouldBeX ;
-  var shouldBeY ;
+  var shouldBeX =nowX;
+  var shouldBeY =nowY;
 
-  if(obstacleSet[obsId][8]!="type1"&&obstacleSet[obsId][8]!="type2") obstacleSet[obsId][8]="type1";//第一次
+  if(obstacleSet[obsId][8]!="type1"&&obstacleSet[obsId][8]!="type2") 
+  {
+      obstacleSet[obsId][8]="type1";//第一次
+  }  
 
   if(((oriObstacleSet[obsId][5]>=0&&nowX<endPointX)|| //x位移為正向右
      (oriObstacleSet[obsId][5]<0&&nowX>endPointX)|| //x位移為負向左
@@ -865,9 +868,12 @@ function obstacleMoving(obsId)
   }
   else if(obstacleSet[obsId][8]=="type1") 
   {
-    obstacleSet[obsId][8]="type2";
-    shouldBeX = Number(nowX)-Number(xMoveDistance);
-    shouldBeY = Number(nowY)-Number(yMoveDistance);
+    if(obstacleSet[obsId][9]!="once")
+    {
+      obstacleSet[obsId][8]="type2";
+      shouldBeX = Number(nowX)-Number(xMoveDistance);
+      shouldBeY = Number(nowY)-Number(yMoveDistance);
+    }
   }
   else if(((oriObstacleSet[obsId][5]>=0&&nowX>x)|| //x位移為正向右 反向向左 終點為起點
      (oriObstacleSet[obsId][5]<0&&nowX<x)|| //x位移為負向左

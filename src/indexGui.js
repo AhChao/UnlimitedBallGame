@@ -16,7 +16,7 @@ var guiAboutGame = {
 		var a = document.getElementById("cubeMsg");
 		a.click();
 	},
-	"SelectStage" : "1205TryToUnlock",
+	"SelectStage" : "1206PurpleStars",
 };
 
 var guiDataSet = {
@@ -59,7 +59,7 @@ var guiOption = {
 
 gameCategory.add(guiAboutGame, 'Control');
 gameCategory.add(guiAboutGame, 'AboutCube');
-var selectAnotherStage = gameCategory.add(guiAboutGame, 'SelectStage',["1205TryToUnlock","1204Move.gif","1130IceMelted","1129BumpBumpJump","1128PatientStage","1124WeeklyChallenge","BasicStage"]);
+var selectAnotherStage = gameCategory.add(guiAboutGame, 'SelectStage',["1206PurpleStars","1205TryToUnlock","1204Move.gif","1130IceMelted","1129BumpBumpJump","1128PatientStage","1124WeeklyChallenge","BasicStage"]);
 
 replayCategory.add(guiDataSet,"SavetheReplay");
 replayCategory.add(guiDataSet,"LoadtheReplay");
