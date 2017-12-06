@@ -181,8 +181,8 @@ function checkKey(e) {//按下按鍵時觸發的
     else if ( e.keyCode == '67')//c
     {      
       shadowMode = !shadowMode;
-      if(shadowMode) document.getElementById("shadowStatusText").innerText = "||ShadowMode【ON】:  ";
-      else document.getElementById("shadowStatusText").innerText = "||ShadowMode【OFF】:  ";
+      if(shadowMode) document.getElementById("shadowStatusText").innerText = "ShadowMode【ON】:  ";
+      else document.getElementById("shadowStatusText").innerText = "ShadowMode【OFF】:  ";
     }
     else if ( e.keyCode == '86')//v
     {

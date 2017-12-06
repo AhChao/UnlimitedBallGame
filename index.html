@@ -3,8 +3,11 @@
 <head>
 	<title>UnlimitedBall</title>
 </head>
+<link rel="stylesheet" type="text/css" href="./src/indexCSS.css">
 <body id="gameBody">	
 	<h1 id="gameTitle">Unlimited Ball Game</h1>
+	<!--<h3 id="gameDescription">Control the Ball to the Goal(Red One)!</h3>-->
+	<div id="gameAllOption" style="display: none;">
 	<text>Choose Stage :</text>
 	<select id="stageSelect" onchange="init()">			
 		<option value="1205TryToUnlock">1205TryToUnlock</option>
@@ -15,10 +18,20 @@
 		<option value="1124WeeklyChallenge">1124WeeklyChallenge</option>
 		<option value="BasicStage">BasicStage</option>		
 	</select>	
-	<text>| Color of Ball:</text><input type="color" id="jumperColor" value="#FCE0CA"></input>
-	<button onclick="Respawn()" style="display: inline;">Respawn</button><button onclick="saveReplay()" style="display: inline;">SaveReplay</button><text> | LoadReplay:</text><input type="file" id="selectedFile" onchange="loadReplay(event)" style="display: inline";>
-	<h3><text id="timerStatusText">Timer【OFF】:  </text><text id="timerCount">0</text><text> second(s)</text>
-		<text id="shadowStatusText">||ShadowMode【OFF】:  </text><text id="shadowRecText">【REC:false】 </text><text id="shadowPlayText">【Play:false】 </text></h3>
+	<text>| Color of Ball:</text><input type="color" id="jumperColor" value="#FCE0CA" onchange="Respawn()"></input>
+	<button onclick="Respawn()" style="display: inline;">Respawn</button><button id="saveRPBtn" onclick="saveReplay()" style="display: inline;">SaveReplay</button><text> | LoadReplay:</text><input type="file" id="loadRPBtn" onchange="loadReplay(event)" style="display: inline";>
+	</div>
+	
+	<div id="gameStatusText">
+	<h3 style="display:inline; border-style: solid;
+    border-width: 2px; border-radius: 5px;" >
+		<text id="timerStatusText">Timer【OFF】:  </text><text id="timerCount">0</text><text> second(s)</text></h3>
+	<h3 style="display:inline; border-style: solid;
+    border-width: 2px; border-radius: 5px;">
+		<text id="shadowStatusText">ShadowMode【OFF】:  </text><text id="shadowRecText">【REC:false】 </text><text id="shadowPlayText">【Play:false】 </text></h3>
+	</div>
+	
+	<div id="gameTutorialText" style="display: none;">
 	<text>[z]To Restart Timer / [x]To Open Timer / [←][→]To move / [↑][Space]To jump and double jump / [c][v][b]For ShadowMode / [r]For Respawn</text><br>
 	<text style="color:gray ">■</text><text> can go through bottom / 
 	<text style="color:blue ">■</text><text> cant climb / 
@@ -27,6 +40,7 @@
 	<text style="color:#33FFDD ">■</text><text> touch will melt /		
 	<text style="color:red ">■</text><text> is goal</text>
 	<br>
+	</div>
 	<div id="gamepadPrompt"></div>
     <div id="gamepadDisplay"></div>
 	<svg id="basicSVG" width="500" height="500">
@@ -36,12 +50,24 @@
 	<script type="text/javascript" src="./lib/jquery-3.2.1.min.js"></script>	
 	<script type="text/javascript" src="./lib/d3.v3.min.js"></script>	
 	<script type="text/javascript" src="./lib/dat.gui.min.js"></script>
+	<script type="text/javascript" src="./lib/jquery.colorbox-min.js"></script>
 	<script type="text/javascript" src="./src/gamepadControll.js"></script>
 	<script type="text/javascript" src="./src/map.js"></script>
 	<script type="text/javascript" src="./src/main.js"></script>
 	<script type="text/javascript" src="./src/replaySave.js"></script>
-	<!--<script type="text/javascript" src="./src/indexGui.js"></script>-->
-	<script type="text/javascript"> document.addEventListener('click', function(e) {if(document.activeElement.toString() == '[object HTMLButtonElement]'||document.activeElement.toString() == '[object HTMLInputElement]'){ document.activeElement.blur(); } });
+	<script type="text/javascript" src="./src/indexGui.js"></script>
+	<script type="text/javascript"> 
+		document.addEventListener('click', 
+		function(e) {
+			console.log(document.activeElement.toString());
+			if(document.activeElement.toString() == '[object HTMLButtonElement]'||
+			   document.activeElement.toString() == '[object HTMLInputElement]'||
+			   document.activeElement.toString() == '[object HTMLBodyElement]')
+			{ document.activeElement.blur();} 
+		});
 	</script>
+
+	<a id="controlMsg" class='gallery' href='./img/control.png' style="display:none;">Control</a>
+	<a id="cubeMsg" class='gallery' href='./img/cube.png' style="display:none;">Cube</a>
 </body>
 </html>
