@@ -600,6 +600,7 @@ function init()
   .attr("height","500");
 
   var stage = document.getElementById("stageSelect").value;
+  stage = guiAboutGame["SelectStage"];//for datgui
   //obstacleSet = stageSet[stage]["obstacleSet"];
   obstacleSet = JSON.parse(JSON.stringify(stageSet[stage]["obstacleSet"]));  
   oriObstacleSet = JSON.parse(JSON.stringify(stageSet[stage]["obstacleSet"]));

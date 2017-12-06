@@ -77,5 +77,6 @@ playerColorSet.onFinishChange(function(value) {
 });
 selectAnotherStage.onFinishChange(function(value) {
   document.getElementById("stageSelect").value = value;
+  document.activeElement.blur();
   init();
 });

@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="./src/indexCSS.css">
 <body id="gameBody">	
 	<h1 id="gameTitle">Unlimited Ball Game</h1>
-	<!--<h3 id="gameDescription">Control the Ball to the Goal(Red One)!</h3>-->
+	<!--<h5 id="gameDescription" style="color: gray">After select stage, click the webpage other space.</h5>-->
 	<div id="gameAllOption" style="display: none;">
 	<text>Choose Stage :</text>
 	<select id="stageSelect" onchange="init()">			
@@ -53,13 +53,13 @@
 	<script type="text/javascript" src="./lib/jquery.colorbox-min.js"></script>
 	<script type="text/javascript" src="./src/gamepadControll.js"></script>
 	<script type="text/javascript" src="./src/map.js"></script>
-	<script type="text/javascript" src="./src/main.js"></script>
-	<script type="text/javascript" src="./src/replaySave.js"></script>
 	<script type="text/javascript" src="./src/indexGui.js"></script>
+	<script type="text/javascript" src="./src/main.js"></script>
+	<script type="text/javascript" src="./src/replaySave.js"></script>	
 	<script type="text/javascript"> 
 		document.addEventListener('click', 
 		function(e) {
-			console.log(document.activeElement.toString());
+			//console.log(document.activeElement.toString());
 			if(document.activeElement.toString() == '[object HTMLButtonElement]'||
 			   document.activeElement.toString() == '[object HTMLInputElement]'||
 			   document.activeElement.toString() == '[object HTMLBodyElement]')

@@ -309,6 +309,67 @@ var stageSet =
     "respawnPoint" : [50,430],
     "stageName" : "1205TryToUnlock",
   },
+  "WorkingStage" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[-10,0,-9999,500,"noClimb"],
+      //"rightfloor":[500,510,-9999,500,"noClimb"],
+      "downfloor":[40,700,480,500,"noClimb"],
+      //"upfloor":[-100,600,-20,0,"noClimb"],
+    },
+    "respawnPoint" : [50,420],
+    "stageName" : "WorkingStage",
+  },
+  "Lodi" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[00,20,-9999,500,"noClimb"],
+      //"rightfloor":[500,510,-9999,500,"noClimb"],
+      "downfloor":[20,700,480,500,"noClimb"],
+      //"upfloor":[-100,600,-20,0,"noClimb"],
+
+      "lodiCirEdge1":[80,100,220,420,"cantPass"],
+      "lodiCirEdge2":[100,280,220,240,"cantPass"],
+      "lodiCirEdge3":[100,280,400,420,"cantPass"],
+      "lodiCirEdge4":[260,280,220,420,"cantPass"],
+
+      "lodiCir2Line1":[240,260,380,400,"passable"],
+      "lodiCir2Line11":[220,240,360,380,"passable"],
+      "lodiCir2Line12":[200,220,340,360,"passable"],
+      "lodiCir2Line13":[180,200,320,340,"passable"],
+      "lodiCir2Line17":[260,280,400,420,"passable"],
+      "lodiCir2Line14":[280,300,420,440,"passable"],
+      "lodiCir2Line15":[300,320,440,460,"passable"],
+      "lodiCir2Line16":[320,340,460,480,"passable"],     
+      "lodiCir2Line2":[100,120,380,400,"passable"],
+      "lodiCir2Line21":[120,140,360,380,"passable"],
+      "lodiCir2Line22":[140,160,340,360,"passable"],
+      "lodiCir2Line23":[160,180,320,340,"passable"],
+      "lodiCir2Line27":[80,100,400,420,"passable"],
+      "lodiCir2Line24":[60,80,420,440,"passable"],
+      "lodiCir2Line25":[40,60,440,460,"passable"],
+      "lodiCir2Line26":[20,40,460,480,"passable"],
+      "lodiCir2Line3":[170,190,160,320,"passable"],
+
+
+      "lodiCirLine11":[220,240,260,280,"dead"],
+      "lodiCirLine12":[200,220,280,300,"dead"],
+      "lodiCirLine13":[180,200,300,320,"dead"],
+      "lodiCirLine14":[220,240,260,280,"dead"],
+      "lodiCirLine15":[200,220,280,300,"dead"],
+      "lodiCirLine16":[180,200,300,320,"dead"],
+      "lodiCirLine17":[180,200,300,320,"dead"],
+      "lodiCirLine21":[120,140,260,280,"dead"],
+      "lodiCirLine22":[140,160,280,300,"dead"],
+      "lodiCirLine23":[160,180,300,320,"dead"],
+      "lodiCirLine3":[170,190,300,420,"dead"],      
+    },
+    "respawnPoint" : [50,460],
+    "stageName" : "Lodi",
+    "chasing" : "true",
+  },
   /*
   "WorkingStage" :
   {
