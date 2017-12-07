@@ -29,6 +29,7 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var couldSlide = false;
 var lockList = [];
 var nowlock = 0;
 var arriveTime;
@@ -262,9 +263,18 @@ function worldGravity()
     {      
       if(droping&&result[3]!="noClimb"&&result[3]!="dead"&&result[3]!="spring")//踢牆跳
       {
+        if(!couldSlide)
+        {
+          var reflectResult = collisionDetection("#jumper",-velocityX*15,0);
+          result[1] = reflectResult[1];
+        }
+        else if(jumping)
+        {
+          var reflectResult = collisionDetection("#jumper",-velocityX*15,0);
+          result[1] = reflectResult[1];
+        }
         //result[1] = result[1] - velocityX*15;
-        var reflectResult = collisionDetection("#jumper",-velocityX*15,0);
-        result[1] = reflectResult[1];
+        
         //orix = orix - velocityX*15;
         droping = false;
         jumpTimes = 0;

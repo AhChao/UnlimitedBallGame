@@ -2,6 +2,7 @@ var gui = new dat.gui.GUI({ width:300,});
 var gameCategory = gui.addFolder('AboutTheGame');
 var optionCategory = gui.addFolder('Option');
 var replayCategory = gui.addFolder('Replay');
+var testCategory = gui.addFolder('Testing');
 gameCategory.open();
 jQuery(document).ready(function () {
 jQuery('a.gallery').colorbox({ opacity:0.5 , rel:'group1',/*width:480,height:200*/ });
@@ -55,7 +56,11 @@ var guiOption = {
 		e.keyCode= 66;
 		$('input').trigger(e);
 	},
-}
+};
+var guiTest =
+{
+	"SlideOnWall":false,
+};
 
 gameCategory.add(guiAboutGame, 'Control');
 gameCategory.add(guiAboutGame, 'AboutCube');
@@ -71,6 +76,8 @@ optionCategory.add(guiOption,"SwitchShadowMode");
 optionCategory.add(guiOption,"SwitchShadowRec");
 optionCategory.add(guiOption,"SwitchShadowPlay");
 
+var slideOnWallOption = testCategory.add(guiTest,"SlideOnWall");
+
 playerColorSet.onFinishChange(function(value) {
   document.getElementById("jumperColor").value = value;
   Respawn();
@@ -79,4 +86,7 @@ selectAnotherStage.onFinishChange(function(value) {
   document.getElementById("stageSelect").value = value;
   document.activeElement.blur();
   init();
+});
+slideOnWallOption.onChange(function(value){
+		couldSlide=value;
 });
