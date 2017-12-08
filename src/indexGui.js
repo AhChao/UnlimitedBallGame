@@ -17,7 +17,8 @@ var guiAboutGame = {
 		var a = document.getElementById("cubeMsg");
 		a.click();
 	},
-	"SelectStage" : "1206PurpleStars",
+	"SelectStage" : "1208TheTruePath",
+	//"SelectStage" : "WorkingStage",
 };
 
 var guiDataSet = {
@@ -64,7 +65,8 @@ var guiTest =
 
 gameCategory.add(guiAboutGame, 'Control');
 gameCategory.add(guiAboutGame, 'AboutCube');
-var selectAnotherStage = gameCategory.add(guiAboutGame, 'SelectStage',["1206PurpleStars","1205TryToUnlock","1204Move.gif","1130IceMelted","1129BumpBumpJump","1128PatientStage","1124WeeklyChallenge","BasicStage"]);
+//var selectAnotherStage = gameCategory.add(guiAboutGame, 'SelectStage',["WorkingStage","1206PurpleStars","1205TryToUnlock","1204Move.gif","1130IceMelted","1129BumpBumpJump","1128PatientStage","1124WeeklyChallenge","BasicStage"]);
+var selectAnotherStage = gameCategory.add(guiAboutGame, 'SelectStage',["1208TheTruePath","1206PurpleStars","1205TryToUnlock","1204Move.gif","1130IceMelted","1129BumpBumpJump","1128PatientStage","1124WeeklyChallenge","BasicStage"]);
 
 replayCategory.add(guiDataSet,"SavetheReplay");
 replayCategory.add(guiDataSet,"LoadtheReplay");

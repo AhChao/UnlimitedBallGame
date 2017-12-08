@@ -366,6 +366,146 @@ var stageSet =
     "respawnPoint" : [250,250],
     "stageName" : "1206PurpleStars",
   },
+  "1208TheTruePath" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[0,20,-9999,500,"noClimb"],
+      "rightfloor":[480,500,-9999,500,"noClimb"],
+      "downfloor":[440,490,480,500,"noClimb"],
+      "upfloor":[-100,3600,0,20,"noClimb"],
+      "goal":[20,60,60,80,"goal"],
+      "obs":[400,420,430,450,"cantPass"],
+      "obs2":[320,340,430,450,"cantPass"],
+      "obs3":[240,260,430,450,"cantPass"],
+      "obs4":[160,180,430,450,"cantPass"],
+      "obs5":[80,100,430,450,"cantPass"],
+
+      "lock1":[80,100,300,320,"lock"],
+      "lock2":[160,180,300,320,"lock"],
+      "lock3":[240,260,300,320,"lock"],
+      "lock4":[400,420,300,320,"lock"],
+      "lock5":[320,340,300,320,"lock"],
+      
+      "obs6":[320,340,200,250,"cantPass"],
+      "ice1":[360,380,180,200,"ice"],
+      "ice2":[460,480,180,200,"ice"],
+      "ice3":[460,480,80,100,"ice"],
+      "ice4":[360,380,80,100,"ice"],
+      "ice5":[460,480,130,150,"ice"],
+      "ice6":[360,380,130,150,"ice"],
+
+      "road":[250,440,60,80,"noClimb"],  
+      "kabe":[200,220,20,160,"noClimb"],
+      "kabe2":[300,320,80,250,"noClimb"], 
+      "deadRoad":[200,270,160,180,"dead"],
+      "ice7":[230,250,140,160,"ice"],  
+      "deadRoad2":[20,180,230,250,"dead"],
+      "danger":[250,270,250,270,"noClimb"],
+
+      "spring":[160,180,210,230,"spring"],
+
+      "dead":[20,40,350,370,"dead",210,0,4],
+      "dead2":[460,480,350,370,"dead",-210,0,4],
+      "dead3":[100,120,20,40,"dead",0,180,2],
+      "danTi":[100,120,200,220,"noClimb",0,-180,2],
+    },
+    "respawnPoint" : [450,420],
+    //"respawnPoint" : [170,200],
+    "stageName" : "1208TheTruePath",
+  },
+  "WorkingStage2" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[0,20,-9999,500,"noClimb"],
+      //"rightfloor":[500,510,-9999,500,"noClimb"],
+      "downfloor":[0,490,480,500,"noClimb"],
+      "upfloor":[-100,3600,0,20,"noClimb"],
+
+      "obstacle1":[150,170,300,480,"cantPass"],
+      "obstacle2":[230,250,250,480,"cantPass"],
+      "obstacle3":[310,330,200,480,"cantPass"],
+      "obstacle4":[390,410,150,480,"cantPass"],
+      "obstacle5":[470,490,100,480,"cantPass"],
+
+      "obstacle6":[550,570,250,270,"spring"],
+      "obstacle7":[620,640,400,420,"spring"],
+      "obstacle8":[790,810,300,320,"spring"],
+      "obstacle9":[700,720,220,340,"cantPass"],
+      "obstacle10":[680,700,200,300,"dead"],
+      "obstacle11":[900,920,200,300,"cantPass"],
+      "obstacle12":[1150,1170,100,400,"cantPass"],
+      "obstacle13":[1100,1120,400,420,"spring"],
+      "obstacle14":[1300,1320,20,400,"cantPass"],
+      "obstacle15":[1600,1620,20,460,"cantPass"],
+      "obstacle16":[1300,1430,400,420,"cantPass"],
+      "obstacle17":[1470,1620,440,460,"cantPass"],
+      "obstacle18":[1360,1380,480,500,"spring"],
+      "obstacle19":[1410,1430,150,400,"noClimb"],
+
+      //"deadWall":[20,40,0,480,"dead",3000,0,60,,"once"],
+    },
+    //"respawnPoint" : [100,420],
+    "respawnPoint" : [1480,400],
+    "stageName" : "WorkingStage",
+    "chasing" : "true",
+  },
+  "1208AttackOnTitan" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[0,20,-9999,500,"noClimb"],
+      //"rightfloor":[500,510,-9999,500,"noClimb"],
+      "downfloor":[0,2500,480,500,"noClimb"],
+      //"upfloor":[-100,600,-20,0,"noClimb"],
+      "wallSina":[160,180,160,480,"cantPass"],
+      //"wallRose":[160,180,160,480,"cantPass"],
+      //"wallMaria":[160,180,160,480,"cantPass"],
+
+      //"normalWall":[500,520,400,480,"cantPass"],
+
+      "ManeverGear1":[200,220,100,120,"spring"],
+      "ManeverGear2":[340,360,220,240,"spring"],
+      "ManeverGear3":[450,470,240,260,"spring"],
+      "ManeverGear4":[550,570,330,350,"spring"],
+
+      "titan1body":[240,300,240,480,"dead"],
+      "titan1neck":[260,280,160,240,"dead"],
+      "titan1head":[240,300,100,160,"dead"],
+      "titan1yoko":[200,340,260,300,"dead"],
+      "titan1lh":[200,220,200,300,"dead"],
+      "titan1rh":[320,340,300,400,"dead"],
+      //"titan1labor":[280,300,220,240,"lock"],
+      
+
+      "titan2head":[400,440,350,390,"dead"],
+      "titan2headr":[440,460,330,370,"dead"],
+      "titan2headl":[400,420,330,390,"dead"],
+      "titan2neck":[440,460,370,440,"ice"],
+      "titan2body":[420,480,440,480,"dead"],
+      "titan2hand":[400,500,420,440,"cantPass"],
+      "titan2labor":[420,440,400,420,"lock"],
+
+      "titan3head":[590,630,330,390,"dead"],
+      "titan3headt":[570,630,330,350,"dead"],
+      "titan3headd":[570,630,370,390,"dead"],
+      "titan3neck":[590,610,390,450,"ice"],
+      "titan3body":[610,670,430,460,"cantPass"],
+      "titan3hand":[590,610,450,480,"dead"],
+      "titan3foot":[650,670,430,480,"dead"],
+      "titan3foot2":[670,710,460,480,"dead"],
+      "titan3labor":[610,630,410,430,"lock"],
+
+      "titan100labor":[1000,1020,400,420,"lock"],
+
+      //"deadWall":[20,40,0,480,"dead",3000,0,60,,"once"],
+    },
+    //"respawnPoint" : [100,420],
+    "respawnPoint" : [480,400],
+    "stageName" : "1208AttackOnTitan",
+    "chasing" : "true",
+  },
   /*
   "WorkingStage" :
   {
