@@ -18,6 +18,7 @@ var cantClimb = false;
 //角色參數控制
 var ballColor = document.getElementById("jumperColor").value;
 var ballRespawn = [50,400];
+var telePoint = [];
 var ballRadius = 10;
 var timeInterval = 10;//0.01s
 var velocityY = 0;//拿去算自由落體了
@@ -34,6 +35,7 @@ var lockList = [];
 var nowlock = 0;
 var arriveTime;
 var deadmark = false;
+var telemark = false;
 var intervalList = [];
 var stageClear =false ;
 var shadowMode = false;
@@ -205,10 +207,16 @@ function checkKey(e) {//按下按鍵時觸發的
 
 function worldGravity()
 {
+  var everyCheckresult = collisionDetection("#jumper",0,0);
   if(deadmark)
   {
     deadmark = false;
     Respawn();
+  }
+  if(telemark)
+  {
+    telemark = false;
+    d3.select("#jumper").attr("cx",telePoint[0]).attr("cy",telePoint[1]);
   }
   if(intervalList.length>0&&stageStart&&!setObjMove)
   {
@@ -538,6 +546,12 @@ function objectCollision(character,xDisplacement,yDisplacement,theObject,obstacl
       positionShouldBe = [false,changedX,changedY,""];//collision?,x,y
     }
   }
+  else if(collisionObstacle[4]=="tele")
+  {
+    positionShouldBe[1]=telePoint[0];
+    positionShouldBe[2]=telePoint[1];
+    telemark = true;
+  }
   return positionShouldBe;
 }
 
@@ -570,6 +584,11 @@ function init()
   nowlock = 0;
   intervalList = [];
   stageClear = false;
+  stageStart = false;
+  if( setObjMove == true )
+  {
+    setObjMove = false;    
+  }  
   clearInterval(gameStartInterval);
   clearInterval(movingInterval);
   d3.selectAll("#basicSVG").remove();
@@ -626,6 +645,7 @@ function init()
   }
   //oriObstacleSet = stageSet[stage]["obstacleSet"];
   ballRespawn = stageSet[stage]["respawnPoint"];
+  telePoint = stageSet[stage]["telePoint"];
   chasing = stageSet[stage]["chasing"];
   if(stageSet[stage]["jumpDistance"]>0) jumpDistance = stageSet[stage]["jumpDistance"];
   else jumpDistance = 55;
@@ -666,16 +686,31 @@ function passTheStage()
   arriveTime = totalTimeCount/1000;
   if(stageClear == false)
   {
-    d3.select("#basicSVG").append("text")
-    .attr("id","logText")
-    .attr("x","80")
-    .attr("y","270")
-    .attr("fill","#EEEE00")
-    .attr("stroke","black")
-    .attr("stroke-width","1")
-    .attr("style","font-size:70px")
-    .text("Stage Clear!");
-    stageClear = true;  
+    if(chasing)
+    {
+      d3.select("#basicSVG").append("text")
+      .attr("id","logText")
+      .attr("x",80+Number(d3.select("#jumper").attr("cx")-250))
+      .attr("y",270)
+      .attr("fill","#EEEE00")
+      .attr("stroke","black")
+      .attr("stroke-width","1")
+      .attr("style","font-size:70px")
+      .text("Stage Clear!");      
+    }
+    else
+    {
+      d3.select("#basicSVG").append("text")
+      .attr("id","logText")
+      .attr("x","80")
+      .attr("y","270")
+      .attr("fill","#EEEE00")
+      .attr("stroke","black")
+      .attr("stroke-width","1")
+      .attr("style","font-size:70px")
+      .text("Stage Clear!");
+    }
+    stageClear = true;      
   }  
 }
 
@@ -802,6 +837,7 @@ function obstacleBuild(innerObstacleSet)
     else if(innerObstacleSet[i][4]=="cantPass") color="black";
     else if(innerObstacleSet[i][4]=="ice") color="#33FFDD";
     else if(innerObstacleSet[i][4]=="lock") color="#FFD700";
+    else if(innerObstacleSet[i][4]=="tele") color="#005757";
     
     if(innerObstacleSet[i][4]!="lock"||lockList[0]==i)
     {
