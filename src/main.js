@@ -30,6 +30,7 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var showTouchButton = false;
 var couldSlide = false;
 var lockList = [];
 var nowlock = 0;
@@ -715,7 +716,15 @@ function passTheStage()
 }
 
 function Respawn()
-{    
+{
+  if( showTouchButton )
+  {
+    d3.select("#controlSVG").attr("style","display:true");
+  }
+  else
+  {
+    d3.select("#controlSVG").attr("style","display:None");
+  }
   if( shadowMode && shadowPlay)
   {
     d3.select("#shadow").attr("display","true");

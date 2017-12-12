@@ -61,6 +61,7 @@ var guiOption = {
 var guiTest =
 {
 	"SlideOnWall":false,
+	"TouchButton":false,
 };
 
 gameCategory.add(guiAboutGame, 'Control');
@@ -78,6 +79,7 @@ optionCategory.add(guiOption,"SwitchShadowRec");
 optionCategory.add(guiOption,"SwitchShadowPlay");
 
 var slideOnWallOption = testCategory.add(guiTest,"SlideOnWall");
+var touchButtonOption = testCategory.add(guiTest,"TouchButton");
 
 playerColorSet.onFinishChange(function(value) {
   document.getElementById("jumperColor").value = value;
@@ -90,4 +92,7 @@ selectAnotherStage.onFinishChange(function(value) {
 });
 slideOnWallOption.onChange(function(value){
 		couldSlide=value;
+});
+touchButtonOption.onChange(function(value){
+		showTouchButton=value;
 });

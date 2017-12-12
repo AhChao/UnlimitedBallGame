@@ -46,7 +46,22 @@
 	<svg id="basicSVG" width="500" height="500">
 		<rect id="basicSVGBG" x="0" y="0" width="500" height="500" fill="None" stroke="black" stroke-width="5"/>
 		<circle id="jumper" cx="250" cy="330" r="10" fill="#FCE0CA" stroke="black" stroke-width="2"/>
-	</svg>	
+	</svg>
+	<svg id="controlSVG" width="500" height="100" style="display:None">
+		<rect id="controlSVGBG" x="0" y="0" width="500" height="100" fill="None" stroke="black" stroke-width="5"/>	
+		<g id="leftControlSVG" onclick="leftControlSim()" onmouseup="leftControlSimUp()">
+			<rect id="leftControlStroke" x="30" y="10" width="80" height="80" fill="white" stroke="black" stroke-width="5"/>
+			<polygon points="90,20 40,50 90,80" style="fill:white; stroke:black; stroke-width:5;"/>
+		</g>
+		<g id="rightControlSVG" onclick="rightControlSim()" onmouseup="rightControlSimUp()">
+			<rect id="rightControlStroke" x="140" y="10" width="80" height="80" fill="white" stroke="black" stroke-width="5"/>
+			<polygon points="160,20 210,50 160,80" style="fill:white; stroke:black; stroke-width:5;"/>
+		</g>
+		<g id="jumpControlSVG" onclick="jumpControlSim()" onmouseup="jumpControlSimUp()">
+			<rect id="jumpControlStroke" x="390" y="10" width="80" height="80" fill="white" stroke="black" stroke-width="5"/>
+			<polygon points="400,80 430,20 460,80" style="fill:white; stroke:black; stroke-width:5;"/>
+		</g>		
+	</svg><br>
 	<script type="text/javascript" src="./lib/jquery-3.2.1.min.js"></script>	
 	<script type="text/javascript" src="./lib/d3.v3.min.js"></script>	
 	<script type="text/javascript" src="./lib/dat.gui.min.js"></script>
@@ -54,8 +69,9 @@
 	<script type="text/javascript" src="./src/gamepadControll.js"></script>
 	<script type="text/javascript" src="./src/map.js"></script>
 	<script type="text/javascript" src="./src/indexGui.js"></script>
+	<script type="text/javascript" src="./src/touchControl.js"></script>
 	<script type="text/javascript" src="./src/main.js"></script>
-	<script type="text/javascript" src="./src/replaySave.js"></script>	
+	<script type="text/javascript" src="./src/replaySave.js"></script>
 	<script type="text/javascript"> 
 		document.addEventListener('click', 
 		function(e) {
