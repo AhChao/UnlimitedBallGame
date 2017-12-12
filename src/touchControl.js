@@ -1,5 +1,6 @@
 function jumpControlSim()
 {
+  console.log("JD");
   e = $.Event('keydown');
   e.keyCode= 38; // up and A
   $('input').trigger(e);
@@ -18,6 +19,7 @@ function rightControlSim()
 }
 function jumpControlSimUp()
 {
+  console.log("JUP");
   e = $.Event('keyup');
   e.keyCode= 38; // up and A
   $('input').trigger(e);

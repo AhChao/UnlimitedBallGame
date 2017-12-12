@@ -1,10 +1,12 @@
 <!DOCTYPE html>
+
 <html>
 <head>
 	<title>UnlimitedBall</title>
 </head>
 <link rel="stylesheet" type="text/css" href="./src/indexCSS.css">
 <body id="gameBody">	
+	<meta name=”viewport” user-scalable=no/>  
 	<h1 id="gameTitle">Unlimited Ball Game</h1>
 	<!--<h5 id="gameDescription" style="color: gray">After select stage, click the webpage other space.</h5>-->
 	<div id="gameAllOption" style="display: none;">
@@ -49,15 +51,15 @@
 	</svg>
 	<svg id="controlSVG" width="500" height="100" style="display:None">
 		<rect id="controlSVGBG" x="0" y="0" width="500" height="100" fill="None" stroke="black" stroke-width="5"/>	
-		<g id="leftControlSVG" onclick="leftControlSim()" onmouseup="leftControlSimUp()">
+		<g id="leftControlSVG" onmousedown="leftControlSim()" onmouseup="leftControlSimUp()">
 			<rect id="leftControlStroke" x="30" y="10" width="80" height="80" fill="white" stroke="black" stroke-width="5"/>
 			<polygon points="90,20 40,50 90,80" style="fill:white; stroke:black; stroke-width:5;"/>
 		</g>
-		<g id="rightControlSVG" onclick="rightControlSim()" onmouseup="rightControlSimUp()">
+		<g id="rightControlSVG" onmousedown="rightControlSim()" onmouseup="rightControlSimUp()">
 			<rect id="rightControlStroke" x="140" y="10" width="80" height="80" fill="white" stroke="black" stroke-width="5"/>
 			<polygon points="160,20 210,50 160,80" style="fill:white; stroke:black; stroke-width:5;"/>
 		</g>
-		<g id="jumpControlSVG" onclick="jumpControlSim()" onmouseup="jumpControlSimUp()">
+		<g id="jumpControlSVG" onmousedown="jumpControlSim()" onmouseup="jumpControlSimUp()">
 			<rect id="jumpControlStroke" x="390" y="10" width="80" height="80" fill="white" stroke="black" stroke-width="5"/>
 			<polygon points="400,80 430,20 460,80" style="fill:white; stroke:black; stroke-width:5;"/>
 		</g>		
