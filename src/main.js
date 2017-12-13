@@ -30,6 +30,7 @@ var jumpKeyDown = false;
 var leftKeyDown = false;//用於判斷左右鍵押著不放的情況
 var rightKeyDown = false;
 //全域狀態控制
+var skinMode = false;
 var showTouchButton = false;
 var couldSlide = false;
 var lockList = [];
@@ -618,6 +619,25 @@ function init()
   .attr("width","500")
   .attr("height","500")
   .attr("display","none");
+
+  //Pikachu Pattern
+  d3.select("#basicSVG").append("defs")
+  .append("pattern")
+  .attr("id","charPic")
+  .attr("patternUnits","objectBoundingBox")
+  .attr("x",0)
+  .attr("y",0)
+  .attr("width","20")
+  .attr("height","20")
+  .append("image")  
+  .attr("x","0")
+  .attr("y","0")
+  .attr("href","./src/pattern/char_pikachuBall.png")
+  //.attr("href","./src/pattern/char_duogonFlower.png")
+  //.attr("href","https://stickershop.line-scdn.net/stickershop/v1/product/958/LINEStorePC/main@2x.png;compress=true")
+  .attr("width","20")
+  .attr("height","20");
+
   d3.select("#basicSVG").append("circle")
   .attr("id","jumper")
   .attr("cx","250")
@@ -627,7 +647,7 @@ function init()
   .attr("stroke","black")
   .attr("stroke-width","2")
   .attr("width","500")
-  .attr("height","500");
+  .attr("height","500");  
 
   var stage = document.getElementById("stageSelect").value;
   stage = guiAboutGame["SelectStage"];//for datgui
@@ -716,7 +736,7 @@ function passTheStage()
 }
 
 function Respawn()
-{
+{  
   if( showTouchButton )
   {
     d3.select("#controlSVG").attr("style","display:true");
@@ -745,6 +765,10 @@ function Respawn()
   stageReset();
   stageClear = false;
   ballColor = document.getElementById("jumperColor").value;
+  if( skinMode )
+  {
+    ballColor = "url(#charPic)";
+  }
   d3.select("#logText").remove();
   d3.select("#jumper").attr("cx",ballRespawn[0])
                       .attr("cy",ballRespawn[1])

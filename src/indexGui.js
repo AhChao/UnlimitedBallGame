@@ -60,8 +60,9 @@ var guiOption = {
 };
 var guiTest =
 {
-	"SlideOnWall":false,
+	"小朋友才滑牆壁":false,
 	"TouchButton":false,
+	"PikachuSkin":false,
 };
 
 gameCategory.add(guiAboutGame, 'Control');
@@ -78,8 +79,9 @@ optionCategory.add(guiOption,"SwitchShadowMode");
 optionCategory.add(guiOption,"SwitchShadowRec");
 optionCategory.add(guiOption,"SwitchShadowPlay");
 
-var slideOnWallOption = testCategory.add(guiTest,"SlideOnWall");
+var slideOnWallOption = testCategory.add(guiTest,"小朋友才滑牆壁");
 var touchButtonOption = testCategory.add(guiTest,"TouchButton");
+var skinOption = testCategory.add(guiTest,"PikachuSkin");
 
 playerColorSet.onFinishChange(function(value) {
   document.getElementById("jumperColor").value = value;
@@ -95,4 +97,7 @@ slideOnWallOption.onChange(function(value){
 });
 touchButtonOption.onChange(function(value){
 		showTouchButton=value;
+});
+skinOption.onChange(function(value){
+		skinMode=value;
 });
