@@ -37,6 +37,10 @@ var guiOption = {
 		$('input').trigger(e);
 	},
 	"PlayerColor": "#FCE0CA", // CSS string
+	"SkinModeOn":false,
+	"UploadSkinImg" : function() { 
+        document.getElementById('uploadImage').click();
+    },
 	"Respawn" : function(){
 		e = $.Event('keydown');
 		e.keyCode= 82;
@@ -61,8 +65,7 @@ var guiOption = {
 var guiTest =
 {
 	"小朋友才滑牆壁":false,
-	"TouchButton":false,
-	"PikachuSkin":false,
+	"TouchButton":false,	
 };
 
 gameCategory.add(guiAboutGame, 'Control');
@@ -75,13 +78,15 @@ replayCategory.add(guiDataSet,"LoadtheReplay");
 optionCategory.add(guiOption,"SwitchTimerMode");
 optionCategory.add(guiOption,"Respawn");
 var playerColorSet = optionCategory.addColor(guiOption,"PlayerColor");
+var skinOption = optionCategory.add(guiOption,"SkinModeOn");
+optionCategory.add(guiOption,"UploadSkinImg");
 optionCategory.add(guiOption,"SwitchShadowMode");
 optionCategory.add(guiOption,"SwitchShadowRec");
 optionCategory.add(guiOption,"SwitchShadowPlay");
 
 var slideOnWallOption = testCategory.add(guiTest,"小朋友才滑牆壁");
 var touchButtonOption = testCategory.add(guiTest,"TouchButton");
-var skinOption = testCategory.add(guiTest,"PikachuSkin");
+
 
 playerColorSet.onFinishChange(function(value) {
   document.getElementById("jumperColor").value = value;
