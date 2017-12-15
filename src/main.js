@@ -48,6 +48,7 @@ var shadowLoaction =
   "0":[0,0],
 };
 var chasing =false;
+var chasingY = false;
 var gameStartInterval ;
 var movingInterval = null;
 var timerOpen = 0;//0=off 1=all 2=pass
@@ -226,6 +227,7 @@ function worldGravity()
     setObjMove = true;
   }
   if (chasing) chaseScreen();
+  if (chasingY) chaseScreenY();
   if (timerOpen&&stageStart) updateTime();
   if (timerOpen>0&&stageStart) totalTimeCount = Number(totalTimeCount)+Number(timeInterval);
   //dead
@@ -669,6 +671,7 @@ function init()
   ballRespawn = stageSet[stage]["respawnPoint"];
   telePoint = stageSet[stage]["telePoint"];
   chasing = stageSet[stage]["chasing"];
+  chasingY = stageSet[stage]["chasingY"];
   if(stageSet[stage]["jumpDistance"]>0) jumpDistance = stageSet[stage]["jumpDistance"];
   else jumpDistance = 55;
   document.getElementById("gameTitle").innerText = "Unlimited Ball Game" + " - " + stageSet[stage]["stageName"];
@@ -1029,6 +1032,20 @@ function chaseScreen()
   var height = 500;  
   if(d3.select("#jumper").attr("cx")-xMin>=250) xMin=d3.select("#jumper").attr("cx")-xMin-250;
   if(d3.select("#jumper").attr("cy")-yMin>=500) yMin=d3.select("#jumper").attr("cy")-yMin-500;
+  d3.select("#basicSVGBG").attr("x",xMin)
+                          .attr("y",yMin);
+  d3.select("#basicSVG").attr("viewBox",xMin+","+yMin+","+width+","+height)//"0,0,500,500"
+                        .attr("preserveAspectRatio","xMidYMid slice");
+}
+
+function chaseScreenY()
+{
+  var xMin=0;//d3.select("#jumper").attr("cx")-300;
+  var yMin=0;//d3.select("#jumper").attr("cy")-300;
+  var width = 500;
+  var height = 500;  
+  //if(d3.select("#jumper").attr("cx")-xMin>=250) xMin=d3.select("#jumper").attr("cx")-xMin-250;
+  if(d3.select("#jumper").attr("cy")-yMin<=250) yMin=d3.select("#jumper").attr("cy")-yMin-250;
   d3.select("#basicSVGBG").attr("x",xMin)
                           .attr("y",yMin);
   d3.select("#basicSVG").attr("viewBox",xMin+","+yMin+","+width+","+height)//"0,0,500,500"

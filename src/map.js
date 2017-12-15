@@ -522,6 +522,25 @@ var stageSet =
     "stageName" : "1212AWallIsBehindYouAndItsAngry",
     "chasing" : "true",
   },
+  "WorkingStage" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[0,20,-9999,500,"noClimb"],
+      "rightfloor":[480,500,-9999,500,"noClimb"],
+      //"downfloor":[20,480,480,500,"noClimb"],
+      //"upfloor":[-100,600,-20,0,"noClimb"],
+      "startFloor":[20,60,380,400,"noClimb"],
+      "deadFloor":[20,480,480,500,"dead"],
+
+      "obstacle1":[150,350,350,370,"cantPass"],
+      "obstacle2":[380,400,350,370,"cantPass"],
+      
+    },
+    "respawnPoint" : [40,350],
+    "stageName" : "WorkingStage",
+    "chasingY" : "true",
+  },
   "1208AttackOnTitan" :
   {
     "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
@@ -576,7 +595,7 @@ var stageSet =
     //"respawnPoint" : [480,400],
     "stageName" : "1208AttackOnTitan",
     "chasing" : "true",
-  },
+  },  
   /*
   "WorkingStage" :
   {

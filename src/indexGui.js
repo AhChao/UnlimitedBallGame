@@ -70,6 +70,7 @@ var guiTest =
 
 gameCategory.add(guiAboutGame, 'Control');
 gameCategory.add(guiAboutGame, 'AboutCube');
+//WorkingStage
 var selectAnotherStage = gameCategory.add(guiAboutGame, 'SelectStage',["1212AWallIsBehindYouAndItsAngry","1208TheTruePath","1206PurpleStars","1205TryToUnlock","1204Move.gif","1130IceMelted","1129BumpBumpJump","1128PatientStage","1124WeeklyChallenge","BasicStage"]);
 
 replayCategory.add(guiDataSet,"SavetheReplay");

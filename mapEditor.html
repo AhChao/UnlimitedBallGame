@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>UnlimitedBall【MapEditor】</title>
+</head>
+<link rel="stylesheet" type="text/css" href="./src/indexCSS.css">
+<body id="gameBody">	 
+	<h1 id="gameTitle">Unlimited Ball Game【MapEditor】</h1>
+	<svg id="editLine" width="740" height="100">
+		<rect id="editLineBG" x="0" y="0" width="740" height="100" fill="None" stroke="black" stroke-width="5"/>
+		<rect id="noClimbBtn" x="20" y="20" width="60" height="60" fill="#0044BB" stroke="black" stroke-width="5"/>
+		<rect id="goalBtn" x="100" y="20" width="60" height="60" fill="#AA0000" stroke="black" stroke-width="5"/>
+		<rect id="deadBtn" x="180" y="20" width="60" height="60" fill="#3A0088" stroke="black" stroke-width="5"/>
+		<rect id="springBtn" x="260" y="20" width="60" height="60" fill="#F75000" stroke="black" stroke-width="5"/>
+		<rect id="passableBtn" x="340" y="20" width="60" height="60" fill="gray" stroke="black" stroke-width="5"/>
+		<rect id="cantPassBtn" x="420" y="20" width="60" height="60" fill="black" stroke="black" stroke-width="5"/>
+		<rect id="iceBtn" x="500" y="20" width="60" height="60" fill="#33FFDD" stroke="black" stroke-width="5"/>
+		<rect id="lockBtn" x="580" y="20" width="60" height="60" fill="#FFD700" stroke="black" stroke-width="5"/>
+		<rect id="teleBtn" x="660" y="20" width="60" height="60" fill="#005757" stroke="black" stroke-width="5"/>
+	</svg><br>
+	
+	<svg id="basicSVG" width="500" height="500">
+		<rect id="basicSVGBG" x="0" y="0" width="500" height="500" fill="None" stroke="black" stroke-width="5"/>
+		<circle id="jumper" cx="250" cy="330" r="10" fill="#FCE0CA" stroke="black" stroke-width="2"/>
+	</svg>
+	
+	<script type="text/javascript" src="./lib/jquery-3.2.1.min.js"></script>	
+	<script type="text/javascript" src="./lib/d3.v3.min.js"></script>	
+	<script type="text/javascript" src="./lib/dat.gui.min.js"></script>
+	<script type="text/javascript" src="./src/mapEditor.js"></script>
+	<script type="text/javascript"> 
+		document.addEventListener('click', 
+		function(e) {
+			//console.log(document.activeElement.toString());
+			if(document.activeElement.toString() == '[object HTMLButtonElement]'||
+			   document.activeElement.toString() == '[object HTMLInputElement]'||
+			   document.activeElement.toString() == '[object HTMLBodyElement]')
+			{ document.activeElement.blur();} 
+		});
+	</script>
+
+	<a id="controlMsg" class='gallery' href='./img/control.png' style="display:none;">Control</a>
+	<a id="cubeMsg" class='gallery' href='./img/cube.png' style="display:none;">Cube</a>
+</body>
+</html>
