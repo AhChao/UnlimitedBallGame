@@ -3,26 +3,57 @@
 <head>
 	<title>UnlimitedBall【MapEditor】</title>
 </head>
-<link rel="stylesheet" type="text/css" href="./src/indexCSS.css">
-<body id="gameBody">	 
+<link rel="stylesheet" type="text/css" href="./src/editorCSS.css">
+<body id="gameBody"> 
 	<h1 id="gameTitle">Unlimited Ball Game【MapEditor】</h1>
+	<h3>
+		<text>Id:</text><text id="obsId"></text>
+		<text>X:</text><input type="text" size="5" id="obsX"></input>
+		<text>Y:</text><input type="text" size="5" id="obsY"></input>
+		<text>Width:</text><input type="text" size="5" id="obsWidth"></input>
+		<text>Height:</text><input type="text" size="5" id="obsHeight"></input>
+		<button onclick="applyCubeData()">Apply</button>
+		<button onclick="removeCube()">Delete</button>
+	</h3>
+	<h3>
+	<text>ClickCreateMode:</text><label class="switch">
+	  <input id="clickCreateModeCheck" type="checkbox">
+	  <span class="slider"></span>
+	</label>
+	<text>DragMoveMode:</text><label class="switch">
+	  <input id="dragModeCheck" type="checkbox">
+	  <span class="slider"></span>
+	</label>
+	<text>DragPaintMode:</text><label class="switch">
+	  <input id="paintModeCheck" type="checkbox">
+	  <span class="slider"></span>
+	</label>
+	</h3>
+	<h3>
+		<text>UpperLeftX:</text><text id="canvasULX">0</text>
+		<text>UpperLeftY:</text><text id="canvasULY">0</text>
+	</h3>
 	<svg id="editLine" width="740" height="100">
 		<rect id="editLineBG" x="0" y="0" width="740" height="100" fill="None" stroke="black" stroke-width="5"/>
-		<rect id="noClimbBtn" x="20" y="20" width="60" height="60" fill="#0044BB" stroke="black" stroke-width="5"/>
-		<rect id="goalBtn" x="100" y="20" width="60" height="60" fill="#AA0000" stroke="black" stroke-width="5"/>
-		<rect id="deadBtn" x="180" y="20" width="60" height="60" fill="#3A0088" stroke="black" stroke-width="5"/>
-		<rect id="springBtn" x="260" y="20" width="60" height="60" fill="#F75000" stroke="black" stroke-width="5"/>
-		<rect id="passableBtn" x="340" y="20" width="60" height="60" fill="gray" stroke="black" stroke-width="5"/>
-		<rect id="cantPassBtn" x="420" y="20" width="60" height="60" fill="black" stroke="black" stroke-width="5"/>
-		<rect id="iceBtn" x="500" y="20" width="60" height="60" fill="#33FFDD" stroke="black" stroke-width="5"/>
-		<rect id="lockBtn" x="580" y="20" width="60" height="60" fill="#FFD700" stroke="black" stroke-width="5"/>
-		<rect id="teleBtn" x="660" y="20" width="60" height="60" fill="#005757" stroke="black" stroke-width="5"/>
+		<rect id="selectStrokeForCube" x="10" y="10" width=80 height="80" fill="None" stroke="#AA0000" stroke-width="5"/>
+		<rect id="noClimbBtn" x="20" y="20" width="60" height="60" fill="#0044BB" stroke="black" stroke-width="5" onclick="selectCubeColor(this.id)"/>
+		<rect id="goalBtn" x="100" y="20" width="60" height="60" fill="#AA0000" stroke="black" stroke-width="5" onclick="selectCubeColor(this.id)"/>
+		<rect id="deadBtn" x="180" y="20" width="60" height="60" fill="#3A0088" stroke="black" stroke-width="5" onclick="selectCubeColor(this.id)"/>
+		<rect id="springBtn" x="260" y="20" width="60" height="60" fill="#F75000" stroke="black" stroke-width="5" onclick="selectCubeColor(this.id)"/>
+		<rect id="passableBtn" x="340" y="20" width="60" height="60" fill="gray" stroke="black" stroke-width="5" onclick="selectCubeColor(this.id)"/>
+		<rect id="cantPassBtn" x="420" y="20" width="60" height="60" fill="black" stroke="black" stroke-width="5" onclick="selectCubeColor(this.id)"/>
+		<rect id="iceBtn" x="500" y="20" width="60" height="60" fill="#33FFDD" stroke="black" stroke-width="5" onclick="selectCubeColor(this.id)"/>
+		<rect id="lockBtn" x="580" y="20" width="60" height="60" fill="#FFD700" stroke="black" stroke-width="5" onclick="selectCubeColor(this.id)"/>
+		<rect id="teleBtn" x="660" y="20" width="60" height="60" fill="#005757" stroke="black" stroke-width="5" onclick="selectCubeColor(this.id)"/>
 	</svg><br>
 	
-	<svg id="basicSVG" width="500" height="500">
+	<svg id="basicSVG" width="500" height="500" onclick="drawCubeByClick(evt)" viewBox="0,0,500,500">
+	<!--<svg id="basicSVG" width="500" height="500">-->
 		<rect id="basicSVGBG" x="0" y="0" width="500" height="500" fill="None" stroke="black" stroke-width="5"/>
-		<circle id="jumper" cx="250" cy="330" r="10" fill="#FCE0CA" stroke="black" stroke-width="2"/>
-	</svg>
+		<!--<circle id="jumper" cx="250" cy="330" r="10" fill="#FCE0CA" stroke="black" stroke-width="2"/>-->
+	</svg><br>
+	<button onclick="saveMap()">ExportMap</button>
+	<button onclick="backToGame()">BackToGame</button>
 	
 	<script type="text/javascript" src="./lib/jquery-3.2.1.min.js"></script>	
 	<script type="text/javascript" src="./lib/d3.v3.min.js"></script>	

@@ -22,3 +22,10 @@ var loadReplay = function(event)
     };
     reader.readAsText(input.files[0]);
 };
+
+function drawMapUrl()
+{
+    var a = document.createElement("a");
+    a.href = "./mapEditor.html";
+    a.click();
+}

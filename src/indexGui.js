@@ -65,7 +65,10 @@ var guiOption = {
 var guiTest =
 {
 	"小朋友才滑牆壁":false,
-	"TouchButton":false,	
+	"TouchButton":false,
+	"DrawTheMap": function() { 
+        document.getElementById('drawMapBtn').click();
+    },	
 };
 
 gameCategory.add(guiAboutGame, 'Control');
@@ -87,7 +90,7 @@ optionCategory.add(guiOption,"SwitchShadowPlay");
 
 var slideOnWallOption = testCategory.add(guiTest,"小朋友才滑牆壁");
 var touchButtonOption = testCategory.add(guiTest,"TouchButton");
-
+testCategory.add(guiTest,"DrawTheMap");
 
 playerColorSet.onFinishChange(function(value) {
   document.getElementById("jumperColor").value = value;

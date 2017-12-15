@@ -21,6 +21,7 @@
 	<text>| Color of Ball:</text><input type="color" id="jumperColor" value="#FCE0CA" onchange="Respawn()"></input>
 	<button onclick="Respawn()" style="display: inline;">Respawn</button><button id="saveRPBtn" onclick="saveReplay()" style="display: inline;">SaveReplay</button><text> | LoadReplay:</text><input type="file" id="loadRPBtn" onchange="loadReplay(event)" style="display: inline";>
 	<input accept="image/*" id="uploadImage" type="file" onchange="skinChange(this)">
+	<button id="drawMapBtn" onclick="drawMapUrl()" style="display: inline;">DrawTheMap</button>
 	</div>
 	
 	<div id="gameStatusText">
