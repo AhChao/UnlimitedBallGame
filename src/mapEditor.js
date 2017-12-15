@@ -3,6 +3,7 @@ var dragStartX="";
 var dragStartY="";
 var dragEndX;
 var dragEndY;
+var customMap ={};
 
 function selectCubeColor(id)
 {
@@ -22,10 +23,13 @@ function drawCubeByClick(evt)
 {
 	if(document.getElementById("clickCreateModeCheck").checked)
 	{
+		var viewBox = d3.select("#basicSVG").attr("viewBox").split(",");
+		var viewBoxX = viewBox[0];
+		var viewBoxY = viewBox[1];
 		var e = evt.target;
 	    var dim = e.getBoundingClientRect();
-	    var x = evt.clientX - dim.left;
-	    var y = evt.clientY - dim.top;
+	    var x = evt.clientX - dim.left + Number(viewBoxX);
+	    var y = evt.clientY - dim.top + Number(viewBoxY);
 	    var height = 20;
 	    var width = 20;
 	    var obsCount = document.getElementById("basicSVG").childElementCount;
@@ -100,10 +104,46 @@ function applyCubeData()
 		});
 	selectCube(id);
 }
+function resetCanvas()
+{
+	document.getElementById("canvasULX").innerText=0;
+    document.getElementById("canvasULY").innerText=0;
+	d3.select("#basicSVG").attr("viewBox","0,0,500,500");
+    d3.select("#basicSVGBG").attr("x",0).attr("y",0);
+}
+
+function saveMap()
+{
+	var totalSVG = d3.select("#basicSVG").selectAll("rect");
+	customMap ={};
+	for(var i in totalSVG[0])
+	{
+		console.log(totalSVG[0][i].id);
+		if(id!="basicSVG"&&id!="basicSVGBG")
+		{
+			var x = d3.select("#"+totalSVG[0][i].id).attr("x");
+			var y = d3.select("#"+totalSVG[0][i].id).attr("y");
+			var height = d3.select("#"+totalSVG[0][i].id).attr("height");
+			var width = d3.select("#"+totalSVG[0][i].id).attr("width");
+			var option;
+			switch(d3.select("#"+totalSVG[0][i].id).attr("fill")){
+				case "#0044BB": option = "noClimb";
+				case "#AA0000": option = "goal";
+				case "#3A0088": option = "dead";
+				case "#F75000": option = "spring";
+				case "gray": option = "passable";
+				case "black": option = "cantPass";
+				case "#33FFDD": option = "ice";
+				case "#FFD700": option = "lock";
+				case "#005757": option = "tele";
+			}
+			customMap[totalSVG[0][i].id] = [x,y,width,height,option];
+		}		
+	}
+}
 
 var dragCreate = d3.behavior.drag()  
     .on('dragstart', function() {
-    	console.log(d3.select("#basicSVG").attr("viewBox"));
     	dragStartX="";
     	dragStartY="";
     })
@@ -143,8 +183,8 @@ var dragCreate = d3.behavior.drag()
       }
       else if(document.getElementById("dragModeCheck").checked)
       {
-      	var movedX = dragEndX- dim.left
-      	var movedY = dragEndY- dim.top
+      	var movedX = dragEndX- dim.left;
+      	var movedY = dragEndY- dim.top;
       	d3.select("#"+document.getElementById("obsId").innerText).
 			      attr({
 			      'x':movedX,
@@ -152,12 +192,20 @@ var dragCreate = d3.behavior.drag()
 			      });
 		selectCube(document.getElementById("obsId").innerText);
       }
-      else
+      else if(!document.getElementById("clickCreateModeCheck").checked)
       {
       	var movedX =0 ;
       	var movedY =0 ;
       	movedX = dragEndX- dim.left;
       	movedY = dragEndY- dim.top;
+      	var viewBox = d3.select("#basicSVG").attr("viewBox").split(",");
+		var viewBoxX = viewBox[0];
+		var viewBoxY = viewBox[1];
+
+      	movedX = Number(viewBoxX) + Number(dragStartX)-dragEndX;
+      	movedY = Number(viewBoxY) + Number(dragStartY)-dragEndY;
+      	if(isNaN(movedX)) movedX = 0;
+      	if(isNaN(movedY)) movedY = 0;
       	document.getElementById("canvasULX").innerText=movedX;
       	document.getElementById("canvasULY").innerText=movedY;
       	d3.select("#basicSVG").attr("viewBox",movedX+","+movedY+",500,500");
