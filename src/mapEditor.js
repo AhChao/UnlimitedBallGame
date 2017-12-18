@@ -112,14 +112,25 @@ function resetCanvas()
     d3.select("#basicSVGBG").attr("x",0).attr("y",0);
 }
 
+function simRespawnPoint()
+{
+	d3.select("#jumper").attr("cx",document.getElementById("respawnXText").value)
+						.attr("cy",document.getElementById("respawnYText").value);
+}
+
 function saveMap()
 {
 	var totalSVG = d3.select("#basicSVG").selectAll("rect");
+	var obsSet = customMap["obstacleSet"];
+	obsSet ={};
 	customMap ={};
+	customMap["stageName"] = document.getElementById("mapNameText").value;
+	customMap["respawnPoint"] = [document.getElementById("respawnXText").value,document.getElementById("respawnYText").value];
+	customMap["obstacleSet"] = {};
 	for(var i in totalSVG[0])
 	{
 		console.log(totalSVG[0][i].id);
-		if(id!="basicSVG"&&id!="basicSVGBG")
+		if(totalSVG[0][i].id!="basicSVG"&&totalSVG[0][i].id!="basicSVGBG"&&totalSVG[0][i].id!="objSelectStroke")
 		{
 			var x = d3.select("#"+totalSVG[0][i].id).attr("x");
 			var y = d3.select("#"+totalSVG[0][i].id).attr("y");
@@ -127,19 +138,49 @@ function saveMap()
 			var width = d3.select("#"+totalSVG[0][i].id).attr("width");
 			var option;
 			switch(d3.select("#"+totalSVG[0][i].id).attr("fill")){
-				case "#0044BB": option = "noClimb";
-				case "#AA0000": option = "goal";
-				case "#3A0088": option = "dead";
-				case "#F75000": option = "spring";
-				case "gray": option = "passable";
-				case "black": option = "cantPass";
-				case "#33FFDD": option = "ice";
-				case "#FFD700": option = "lock";
-				case "#005757": option = "tele";
+				case "#0044BB":
+					option = "noClimb";
+					break;
+				case "#AA0000":
+					option = "goal";
+					break;
+				case "#3A0088":
+					option = "dead";
+					break;
+				case "#F75000":
+					option = "spring";
+					break;
+				case "gray":
+					option = "passable";
+					break;
+				case "black":
+					option = "cantPass";
+					break;
+				case "#33FFDD":
+					option = "ice";
+					break;
+				case "#FFD700":
+					option = "lock";
+					break;
+				case "#005757":
+					option = "tele";
+					break;
 			}
-			customMap[totalSVG[0][i].id] = [x,y,width,height,option];
+			var objId = totalSVG[0][i].id;
+			customMap["obstacleSet"][objId]=[Number(x),Number(x)+Number(width),Number(y),Number(y)+Number(height),option];
+			//obsSet[totalSVG[0][i].id] = [x,y,width,height,option];
 		}		
 	}
+	
+
+	var jsonFinData = JSON.stringify(customMap);
+	var name = document.getElementById("mapNameText").value+".txt";
+	var type = "text/plain"
+    var a = document.createElement("a");
+    var file = new Blob([jsonFinData], {type: type});
+    a.href = URL.createObjectURL(file);
+    a.download = name;
+    a.click();
 }
 
 var dragCreate = d3.behavior.drag()  

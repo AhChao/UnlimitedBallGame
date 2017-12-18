@@ -68,13 +68,16 @@ var guiTest =
 	"TouchButton":false,
 	"DrawTheMap": function() { 
         document.getElementById('drawMapBtn').click();
-    },	
+    },
+    "LoadTheMap": function() { 
+        document.getElementById('loadMapBtn').click();
+    },
 };
 
 gameCategory.add(guiAboutGame, 'Control');
 gameCategory.add(guiAboutGame, 'AboutCube');
 //WorkingStage
-var selectAnotherStage = gameCategory.add(guiAboutGame, 'SelectStage',["1212AWallIsBehindYouAndItsAngry","1208TheTruePath","1206PurpleStars","1205TryToUnlock","1204Move.gif","1130IceMelted","1129BumpBumpJump","1128PatientStage","1124WeeklyChallenge","BasicStage"]);
+var selectAnotherStage = gameCategory.add(guiAboutGame, 'SelectStage',["1212AWallIsBehindYouAndItsAngry","1208TheTruePath","1206PurpleStars","1205TryToUnlock","1204Move.gif","1130IceMelted","1129BumpBumpJump","1128PatientStage","1124WeeklyChallenge","BasicStage","customMap"]);
 
 replayCategory.add(guiDataSet,"SavetheReplay");
 replayCategory.add(guiDataSet,"LoadtheReplay");
@@ -91,6 +94,7 @@ optionCategory.add(guiOption,"SwitchShadowPlay");
 var slideOnWallOption = testCategory.add(guiTest,"小朋友才滑牆壁");
 var touchButtonOption = testCategory.add(guiTest,"TouchButton");
 testCategory.add(guiTest,"DrawTheMap");
+testCategory.add(guiTest,"LoadTheMap");
 
 playerColorSet.onFinishChange(function(value) {
   document.getElementById("jumperColor").value = value;

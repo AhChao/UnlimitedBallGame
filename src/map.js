@@ -596,6 +596,18 @@ var stageSet =
     "stageName" : "1208AttackOnTitan",
     "chasing" : "true",
   },  
+  "customMap":
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[0,20,-9999,500,"noClimb"],
+      "rightfloor":[480,500,-9999,500,"noClimb"],
+      "downfloor":[20,480,480,500,"noClimb"],
+      "upfloor":[20,480,0,20,"noClimb"],
+    },
+    "respawnPoint" : [50,420],
+    "stageName" : "customMap",    
+  }
   /*
   "WorkingStage" :
   {

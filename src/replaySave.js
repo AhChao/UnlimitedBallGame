@@ -29,3 +29,16 @@ function drawMapUrl()
     a.href = "./mapEditor.html";
     a.click();
 }
+
+var loadMapData = function(event) 
+{
+    document.activeElement.blur();
+    var input = event.target;
+    var reader = new FileReader();
+    reader.onload = function(){
+        var text = reader.result;
+        var mapData = JSON.parse(text);
+        stageSet["customMap"] = mapData;
+    };
+    reader.readAsText(input.files[0]);
+};

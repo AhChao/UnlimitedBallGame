@@ -51,8 +51,12 @@
 	<svg id="basicSVG" width="500" height="500" onclick="drawCubeByClick(evt)" viewBox="0,0,500,500">
 	<!--<svg id="basicSVG" width="500" height="500">-->
 		<rect id="basicSVGBG" x="0" y="0" width="500" height="500" fill="None" stroke="black" stroke-width="5"/>
-		<!--<circle id="jumper" cx="250" cy="330" r="10" fill="#FCE0CA" stroke="black" stroke-width="2"/>-->
+		<circle id="jumper" cx="250" cy="330" r="10" fill="#FCE0CA" stroke="black" stroke-width="2"/>
 	</svg><br>
+	<text>RespawnX:</text><input type="text" size="10" id="respawnXText" value="250"></input>
+	<text>RespawnY:</text><input type="text" size="10" id="respawnYText" value="330"></input>
+	<button onclick="simRespawnPoint()">Show</button><br>
+	<text>MapName:</text><input type="text" size="10" id="mapNameText" value="customMap"></input>
 	<button onclick="saveMap()">ExportMap</button>
 	<button onclick="backToGame()">BackToGame</button>
 	
@@ -60,16 +64,6 @@
 	<script type="text/javascript" src="./lib/d3.v3.min.js"></script>	
 	<script type="text/javascript" src="./lib/dat.gui.min.js"></script>
 	<script type="text/javascript" src="./src/mapEditor.js"></script>
-	<script type="text/javascript"> 
-		document.addEventListener('click', 
-		function(e) {
-			//console.log(document.activeElement.toString());
-			if(document.activeElement.toString() == '[object HTMLButtonElement]'||
-			   document.activeElement.toString() == '[object HTMLInputElement]'||
-			   document.activeElement.toString() == '[object HTMLBodyElement]')
-			{ document.activeElement.blur();} 
-		});
-	</script>
 
 	<a id="controlMsg" class='gallery' href='./img/control.png' style="display:none;">Control</a>
 	<a id="cubeMsg" class='gallery' href='./img/cube.png' style="display:none;">Cube</a>
