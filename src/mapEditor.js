@@ -4,6 +4,8 @@ var dragStartY="";
 var dragEndX;
 var dragEndY;
 var customMap ={};
+var innerObstacleSet;
+var oldMapData;
 
 function selectCubeColor(id)
 {
@@ -129,7 +131,6 @@ function saveMap()
 	customMap["obstacleSet"] = {};
 	for(var i in totalSVG[0])
 	{
-		console.log(totalSVG[0][i].id);
 		if(totalSVG[0][i].id!="basicSVG"&&totalSVG[0][i].id!="basicSVGBG"&&totalSVG[0][i].id!="objSelectStroke")
 		{
 			var x = d3.select("#"+totalSVG[0][i].id).attr("x");
@@ -183,6 +184,85 @@ function saveMap()
     a.click();
 }
 
+var loadMap = function(event) 
+{
+    document.activeElement.blur();
+    var input = event.target;
+    var reader = new FileReader();
+    
+    reader.onload = function(){
+        var text = reader.result;
+        oldMapData = JSON.parse(text);
+        innerObstacleSet = oldMapData["obstacleSet"];
+        objRebuild();
+    };
+    reader.readAsText(input.files[0]);  
+};
+
+function objRebuild()
+{
+	d3.select("#basicSVG").remove();
+    d3.select("#divForBasicSVG").append("svg")
+	.attr("id","basicSVG")
+	.attr("width","500")
+	.attr("height","500");
+	d3.select("#basicSVG").append("rect")
+	.attr("id","basicSVGBG")
+	.attr("x","0")
+	.attr("y","0")
+	.attr("fill","None")
+	.attr("stroke","black")
+	.attr("stroke-width","5")
+	.attr("width","500")
+	.attr("height","500")
+	.attr("onclick","drawCubeByClick(evt)");
+	d3.select("#basicSVG").append("circle")
+	  .attr("id","jumper")
+	  .attr("cx",oldMapData["respawnPoint"][0])
+	  .attr("cy",oldMapData["respawnPoint"][1])
+	  .attr("r","10")
+	  .attr("fill","#FCE0CA")
+	  .attr("stroke","black")
+	  .attr("stroke-width","2");
+	d3.select('#basicSVG')
+    .call(dragCreate);
+
+    for(var i in innerObstacleSet)
+	{
+	    var height = innerObstacleSet[i][3]-innerObstacleSet[i][2];
+	    var width = innerObstacleSet[i][1]-innerObstacleSet[i][0];
+	    var x = innerObstacleSet[i][0];
+	    var y = innerObstacleSet[i][2];
+	    var obstacleID = i;
+	    var color;
+
+	    if(innerObstacleSet[i][4]=="noClimb") color="#0044BB";
+	    else if(innerObstacleSet[i][4]=="goal") color="#AA0000";
+	    else if(innerObstacleSet[i][4]=="dead") color="#3A0088";
+	    else if(innerObstacleSet[i][4]=="spring") color="#F75000";
+	    else if(innerObstacleSet[i][4]=="passable") color="gray";
+	    else if(innerObstacleSet[i][4]=="cantPass") color="black";
+	    else if(innerObstacleSet[i][4]=="ice") color="#33FFDD";
+	    else if(innerObstacleSet[i][4]=="lock") color="#FFD700";
+	    else if(innerObstacleSet[i][4]=="tele") color="#005757";
+	    
+	    d3.select("#basicSVG").
+	      append('rect').
+	      attr({
+	      'x':x,
+	      'y':y,
+	      'height':height,
+	      'width':width,
+	      'fill':color,
+	      'id': i,
+	      'onclick': "selectCube(this.id)",
+	      });
+	}
+	document.getElementById("respawnXText").value = oldMapData["respawnPoint"][0];
+	document.getElementById("respawnYText").value = oldMapData["respawnPoint"][1];
+	document.getElementById("mapNameText").value = oldMapData["stageName"];
+}
+
 var dragCreate = d3.behavior.drag()  
     .on('dragstart', function() {
     	dragStartX="";
@@ -233,7 +313,7 @@ var dragCreate = d3.behavior.drag()
 			      });
 		selectCube(document.getElementById("obsId").innerText);
       }
-      else if(!document.getElementById("clickCreateModeCheck").checked)
+      else if(document.getElementById("dragCanvasCheck").checked)
       {
       	var movedX =0 ;
       	var movedY =0 ;

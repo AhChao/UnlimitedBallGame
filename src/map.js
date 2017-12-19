@@ -607,7 +607,7 @@ var stageSet =
     },
     "respawnPoint" : [50,420],
     "stageName" : "customMap",    
-  }
+  },
   /*
   "WorkingStage" :
   {
