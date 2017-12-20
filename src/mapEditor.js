@@ -7,6 +7,25 @@ var customMap ={};
 var innerObstacleSet;
 var oldMapData;
 
+function switchMode(id)
+{
+	if(id!="clickCreateModeCheck"&&document.getElementById("clickCreateModeCheck").checked) document.getElementById("clickCreateModeCheck").checked=false;
+	if(id!="paintModeCheck"&&document.getElementById("paintModeCheck").checked) document.getElementById("paintModeCheck").checked=false;
+	if(id!="dragModeCheck"&&document.getElementById("dragModeCheck").checked) document.getElementById("dragModeCheck").checked=false;
+
+	clearSelect();
+}
+
+function clearSelect()
+{
+	d3.select("#objSelectStroke").remove();
+	document.getElementById("obsId").innerText="";
+	document.getElementById("obsWidth").value="";
+	document.getElementById("obsHeight").value="";
+	document.getElementById("obsX").value="";
+	document.getElementById("obsY").value="";
+}
+
 function selectCubeColor(id)
 {
 	nowCubeColor = d3.select("#"+id).attr("fill");
@@ -49,6 +68,7 @@ function drawCubeByClick(evt)
 }
 function selectCube(id)
 {
+	clearSelect();
 	document.getElementById("obsId").innerText=id;
 	document.getElementById("obsWidth").value=d3.select("#"+id).attr("width");
 	document.getElementById("obsHeight").value=d3.select("#"+id).attr("height");
@@ -287,10 +307,11 @@ var dragCreate = d3.behavior.drag()
       var x = dragStartX<dragEndX? dragStartX:dragEndX;
       x = x- dim.left;
       var y = dragStartY<dragEndY? dragStartY:dragEndY;
-      y = y- dim.top;
+      //y = y- dim.top;
       var obsCount = document.getElementById("basicSVG").childElementCount;
       if(document.getElementById("paintModeCheck").checked)
       {
+      	console.log("drag");
       	d3.select("#basicSVG").append("rect").
 	      attr({
 	      'x':x,
@@ -304,21 +325,37 @@ var dragCreate = d3.behavior.drag()
       }
       else if(document.getElementById("dragModeCheck").checked)
       {
-      	var movedX = dragEndX- dim.left;
-      	var movedY = dragEndY- dim.top;
-      	d3.select("#"+document.getElementById("obsId").innerText).
-			      attr({
-			      'x':movedX,
-			      'y':movedY,
-			      });
-		selectCube(document.getElementById("obsId").innerText);
+      	if($.isNumeric(dragEndX)&&$.isNumeric(dragEndY))
+      	{
+      		if(dragStartX>=d3.select("#"+document.getElementById("obsId").innerText).attr('x')&&
+      		   dragStartX<=Number(d3.select("#"+document.getElementById("obsId").innerText).attr('x'))+Number(d3.select("#"+document.getElementById("obsId").innerText).attr('width')))
+      		{
+      			if(dragStartY>=d3.select("#"+document.getElementById("obsId").innerText).attr('y')&&
+      		   	   dragStartY<=Number(d3.select("#"+document.getElementById("obsId").innerText).attr('y'))+Number(d3.select("#"+document.getElementById("obsId").innerText).attr('height')))
+      			{
+      				var innerX = dragStartX - d3.select("#"+document.getElementById("obsId").innerText).attr('x');
+			      	var innerY = dragStartY - d3.select("#"+document.getElementById("obsId").innerText).attr('y');
+			      	var movedX = dragEndX- dim.left;
+			      	var movedY = dragEndY//- dim.top;
+
+			      	movedX = movedX - innerX;
+			      	movedY = movedY - innerY;
+			      	d3.select("#"+document.getElementById("obsId").innerText).
+						      attr({
+						      'x':movedX,
+						      'y':movedY,
+						      });
+					selectCube(document.getElementById("obsId").innerText);
+      			}
+      		}	      	
+		}
       }
       else if(document.getElementById("dragCanvasCheck").checked)
       {
       	var movedX =0 ;
       	var movedY =0 ;
       	movedX = dragEndX- dim.left;
-      	movedY = dragEndY- dim.top;
+      	//movedY = dragEndY- dim.top;
       	var viewBox = d3.select("#basicSVG").attr("viewBox").split(",");
 		var viewBoxX = viewBox[0];
 		var viewBoxY = viewBox[1];
