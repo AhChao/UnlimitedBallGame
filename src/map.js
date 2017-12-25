@@ -523,6 +523,53 @@ var stageSet =
     "stageName" : "1212AWallIsBehindYouAndItsAngry",
     "chasing" : "true",
   },
+  "1225RightTime" :
+  {
+    "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
+    {
+      "leftfloor":[0,20,-9999,500,"noClimb"],
+      "rightfloor":[480,500,-9999,500,"noClimb"],
+      "downfloor":[20,70,480,500,"noClimb"],
+      "upfloor":[-100,3600,0,20,"noClimb"],
+
+      "goal":[20,60,60,80,"goal"],
+      "ice":[100,120,60,80,"ice"],
+
+      "kabe2":[20,150,100,120,"dead"],
+      "kabe3":[150,170,20,120,"dead"],
+
+      "obs":[400,420,430,450,"dead"],
+      "obs2":[320,340,430,450,"dead"],
+      "obs3":[240,260,430,450,"dead"],
+      "obs4":[160,180,430,450,"dead"],
+
+      "lock":[420,440,400,420,"lock"],
+      "lock2":[100,120,380,400,"lock"],
+
+      "obsB":[60,80,300,330,"cantPass"],
+      "obsC":[100,120,280,300,"cantPass",100,-100,3],
+      "obsD":[200,220,180,200,"cantPass",100,100,3],
+      "obsE":[300,320,280,300,"cantPass",100,-100,3],
+
+      "DD":[40,60,230,250,"dead",400,0,5],
+      "DD2":[440,460,180,200,"dead",-400,0,5],
+      "tele":[240,260,60,80,"tele"],
+      "teleBlock":[220,280,80,100,"noClimb"],
+      "teleBlock2":[220,240,20,80,"noClimb"],
+
+      "ddd":[450,470,40,60,"dead",0,100,2],
+      "ddd2":[380,400,120,140,"cantPass",0,-80,3],
+      "ddd3":[320,340,40,60,"dead",0,100,2],
+
+
+      "comeback":[80,120,460,480,"spring",320,0,8],
+
+    },
+    "respawnPoint" : [40,420],
+    //"respawnPoint" : [60,250],
+    "telePoint" : [110,20],
+    "stageName" : "1225RightTime",
+  },
   "WorkingStage" :
   {
     "obstacleSet" : //[x1,x2,y1,y2,特殊(option)]//碰到障礙物不要觸發重力
