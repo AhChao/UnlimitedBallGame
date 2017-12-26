@@ -351,6 +351,9 @@ function worldGravity()
     var oriy = d3.select("#jumper").attr("cy");
     var result = collisionDetection("#jumper",0,upV);
     d3.select("#jumper").attr("cx",result[1]);
+    inTheAir = true;
+    droping = false;
+    dropTime = 0;
     d3.select("#jumper").attr("cy",result[2]);
     distanceCount = Number(distanceCount)+Math.abs(result[2]-oriy);
     if(result[0]&&result[4]=="bot")//撞到
@@ -366,7 +369,9 @@ function worldGravity()
     }
   }
   else if(onTheObstacle)//障礙物上
+  //if(onTheObstacle)//障礙物上
   {
+    //console.log(velocityY)
     jumpTimes = 0;
     inTheAir = false;
     droping = false;
