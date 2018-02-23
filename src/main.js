@@ -19,6 +19,7 @@ var cantClimb = false;
 var ballColor = document.getElementById("jumperColor").value;
 var ballRespawn = [50,400];
 var telePoint = [];
+var diffTele = [];
 var ballRadius = 10;
 var timeInterval = 10;//0.01s
 var velocityY = 0;//拿去算自由落體了
@@ -219,7 +220,15 @@ function worldGravity()
   if(telemark)
   {
     telemark = false;
-    d3.select("#jumper").attr("cx",telePoint[0]).attr("cy",telePoint[1]);
+    if(jQuery.isNumeric( diffTele[0] ))
+    {
+      d3.select("#jumper").attr("cx",diffTele[0]).attr("cy",diffTele[1]);
+      diffTele=[];
+    }
+    else
+    {
+      d3.select("#jumper").attr("cx",telePoint[0]).attr("cy",telePoint[1]);
+    }
   }
   if(intervalList.length>0&&stageStart&&!setObjMove)
   {
@@ -557,8 +566,17 @@ function objectCollision(character,xDisplacement,yDisplacement,theObject,obstacl
   }
   else if(collisionObstacle[4]=="tele")
   {
-    positionShouldBe[1]=telePoint[0];
-    positionShouldBe[2]=telePoint[1];
+    if($.isNumeric(collisionObstacle[10])&&$.isNumeric(collisionObstacle[11]))
+    {
+      positionShouldBe[1]=collisionObstacle[10];
+      positionShouldBe[2]=collisionObstacle[11];
+      diffTele[0]=collisionObstacle[10];
+      diffTele[1]=collisionObstacle[11];
+    }
+    else{
+      positionShouldBe[1]=telePoint[0];
+      positionShouldBe[2]=telePoint[1];
+    }
     telemark = true;
   }
   return positionShouldBe;
